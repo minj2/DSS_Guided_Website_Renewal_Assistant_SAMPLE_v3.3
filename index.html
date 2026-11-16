@@ -939,7 +939,7 @@ const CHECKS = [
        what:`You want customers to ${book ? "book appointments" : "order"} online, but we didn't find ${O.thing} ${where}.${why}`,
        why:`People who are ready to ${O.verb} often want to do it right away, even after hours. Without a way to ${O.verb} online, they have to call during opening hours, and some go elsewhere.`,
        how:[{t:`Check whether your website builder has ${builder} you can switch on.`, who:"owner"},
-            {t:`Bring this to your next squad session. DSS can help you compare options and add ${/^[aeiou]/i.test(O.button) ? "an" : "a"} “${O.button}” button near the top of your homepage.`, who:"dss"},
+            {t:`Bring this to your next squad session. DSS can help you compare vendors and options, and add ${/^[aeiou]/i.test(O.button) ? "an" : "a"} “${O.button}” button near the top of your homepage.`, who:"dss"},
             // v3.2: setting up the tool itself is usually vendor work (NEW-D2: label the step "May need a vendor" and name the type of tool)
             {t: book ? "If your website builder has no booking feature, you will need an online booking system set up on your website."
                      : "If your website builder has no online store feature, you will need an online store or ordering system, with a cart and online payment, set up on your website.", who:"vendor",
