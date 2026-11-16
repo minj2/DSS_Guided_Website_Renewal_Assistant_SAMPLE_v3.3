@@ -1,0 +1,1660 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1"><style>:root{color-scheme:light}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Guided Website Renewal Assistant</title>
+<meta name="description" content="Sprint 2 increment: a small business owner enters their website, gets a four-area assessment, a ranked list of improvements, a before and after, new wording and the steps for their top priority, and an action plan showing who can do each step.">
+<style>
+:root{
+  --bg:#f6f7f9; --surface:#ffffff; --surface-2:#f0f2f5; --text:#16191d; --muted:#5b6470; --border:#dde1e6;
+  --accent:#0f6e6e; --accent-ink:#ffffff; --accent-soft:#e3f2f1;
+  --high:#b42318; --high-soft:#fde8e7; --med:#a15c07; --med-soft:#fdf1df; --low:#3f5f8a; --low-soft:#e7eef8;
+  --good:#1d7a3e; --good-soft:#e3f4e8; --unk:#6b7280; --unk-soft:#eef0f3;
+  --owner:#1d7a3e; --dss:#0f5f99; --vendor:#8a3ab9;
+  --radius:12px; --shadow:0 1px 2px rgba(16,24,40,.06),0 1px 3px rgba(16,24,40,.08);
+  --font:system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+}
+@media (prefers-color-scheme: dark){
+  :root{
+    --bg:#0f1216; --surface:#171b21; --surface-2:#1f242c; --text:#e8ebef; --muted:#a2abb7; --border:#2c333d;
+    --accent:#3fb8b0; --accent-ink:#06201f; --accent-soft:#163130;
+    --high:#ff8a80; --high-soft:#3a1d1c; --med:#f3b35b; --med-soft:#382a15; --low:#93b4e6; --low-soft:#1c2738;
+    --good:#6fd394; --good-soft:#163222; --unk:#a2abb7; --unk-soft:#232932;
+    --owner:#6fd394; --dss:#7cc0f5; --vendor:#d2a1f0;
+    --shadow:none;
+  }
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--text);font:16px/1.55 var(--font)}
+a{color:var(--accent)}
+.wrap{max-width:980px;margin:0 auto;padding:0 16px}
+header.top{background:var(--surface);border-bottom:1px solid var(--border)}
+header.top .wrap{display:flex;align-items:center;justify-content:space-between;gap:12px;padding-top:14px;padding-bottom:14px;flex-wrap:wrap}
+.brand{display:flex;align-items:center;gap:10px}
+.logo{width:34px;height:34px;border-radius:9px;background:var(--accent);color:var(--accent-ink);display:grid;place-items:center;font-weight:800}
+.brand h1{font-size:1.05rem;margin:0;line-height:1.2}
+.brand small{display:block;color:var(--muted);font-size:.78rem;font-weight:500}
+.tag{font-size:.75rem;color:var(--muted);border:1px solid var(--border);border-radius:999px;padding:3px 10px}
+nav.steps{background:var(--surface);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:5}
+nav.steps ol{list-style:none;margin:0;padding:10px 0;display:flex;gap:6px;overflow-x:auto}
+nav.steps button{all:unset;cursor:pointer;display:flex;align-items:center;gap:8px;padding:7px 12px;border-radius:999px;color:var(--muted);font-size:.9rem;white-space:nowrap}
+nav.steps button .n{width:22px;height:22px;border-radius:50%;display:grid;place-items:center;border:1.5px solid currentColor;font-size:.75rem;font-weight:700}
+nav.steps button[aria-current="step"]{background:var(--accent-soft);color:var(--accent);font-weight:650}
+nav.steps button[disabled]{cursor:not-allowed;opacity:.45}
+nav.steps button:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+main{padding:24px 0 64px}
+section.view[hidden]{display:none}
+h2.vh{font-size:1.6rem;margin:0 0 4px;line-height:1.25}
+p.lead{color:var(--muted);margin:0 0 20px;max-width:68ch}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow);padding:20px;margin-bottom:16px}
+.card h3{margin:0 0 10px;font-size:1.05rem}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px 18px}
+.grid4{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}
+@media (max-width:720px){.grid2,.grid4{grid-template-columns:1fr}}
+label.f{display:block;font-weight:600;font-size:.92rem;margin-bottom:6px}
+.hint{display:block;font-weight:400;color:var(--muted);font-size:.82rem;margin-top:2px}
+input[type=text],input[type=url],select,textarea{width:100%;font:inherit;color:var(--text);background:var(--surface);border:1px solid var(--border);border-radius:9px;padding:10px 12px}
+textarea{min-height:160px;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:.85rem;resize:vertical}
+input:focus,select:focus,textarea:focus{outline:2px solid var(--accent);outline-offset:1px;border-color:var(--accent)}
+.err{color:var(--high);font-size:.85rem;margin-top:4px;min-height:1em}
+fieldset{border:0;margin:0;padding:0}
+legend{font-weight:600;font-size:.92rem;margin-bottom:8px;padding:0}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chips label{display:flex;align-items:center;gap:6px;border:1px solid var(--border);border-radius:999px;padding:7px 12px;cursor:pointer;font-size:.9rem;background:var(--surface)}
+.chips input{accent-color:var(--accent)}
+.chips label:has(input:checked){border-color:var(--accent);background:var(--accent-soft);color:var(--text)}
+.q{padding:14px 0;border-top:1px solid var(--border)}
+.q:first-of-type{border-top:0;padding-top:0}
+.btn{all:unset;box-sizing:border-box;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:11px 18px;border-radius:10px;font-weight:650;font-size:.95rem;background:var(--accent);color:var(--accent-ink);text-align:center}
+.btn:hover{filter:brightness(1.07)}
+.btn:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+.btn.ghost{background:transparent;color:var(--accent);border:1px solid var(--border)}
+.btn.small{padding:6px 12px;font-size:.84rem;border-radius:8px}
+.actions{display:flex;gap:10px;flex-wrap:wrap;align-items:center;justify-content:space-between;margin-top:8px}
+.samples{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
+.notice{background:var(--surface-2);border-radius:10px;padding:12px 14px;font-size:.9rem;color:var(--muted)}
+.notice strong{color:var(--text)}
+.answers{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:8px 18px;font-size:.9rem;margin:0}
+.answers div{min-width:0}
+.answers dt{color:var(--muted);font-size:.78rem;text-transform:uppercase;letter-spacing:.04em}
+.answers dd{margin:0;font-weight:600;overflow-wrap:anywhere}
+.area{border:1px solid var(--border);border-radius:var(--radius);padding:16px;background:var(--surface);box-shadow:var(--shadow)}
+.area header{display:flex;justify-content:space-between;align-items:flex-start;gap:10px;margin-bottom:6px}
+.area h3{margin:0;font-size:1rem}
+.score{font-size:1.9rem;font-weight:800;line-height:1}
+.score small{font-size:.8rem;color:var(--muted);font-weight:600}
+.meter{height:8px;border-radius:99px;background:var(--surface-2);overflow:hidden;margin:8px 0 10px}
+.meter i{display:block;height:100%;border-radius:99px}
+.pill{display:inline-flex;align-items:center;gap:5px;font-size:.75rem;font-weight:700;padding:3px 9px;border-radius:999px;white-space:nowrap}
+.s-good{background:var(--good-soft);color:var(--good)}
+.s-attn{background:var(--med-soft);color:var(--med)}
+.s-urgent{background:var(--high-soft);color:var(--high)}
+.s-unk{background:var(--unk-soft);color:var(--unk)}
+.sev-High{background:var(--high-soft);color:var(--high)}
+.sev-Medium{background:var(--med-soft);color:var(--med)}
+.sev-Low{background:var(--low-soft);color:var(--low)}
+.area p.sum{margin:0 0 10px;font-size:.92rem}
+ul.checks{list-style:none;margin:0;padding:0;font-size:.86rem}
+ul.checks li{display:flex;gap:8px;padding:5px 0;border-top:1px dashed var(--border)}
+ul.checks .ic{flex:none;width:18px;text-align:center;font-weight:800}
+.ic.pass{color:var(--good)} .ic.fail{color:var(--high)} .ic.unknown{color:var(--unk)}
+ul.checks .d{color:var(--muted);display:block;font-size:.8rem}
+.issue{border:1px solid var(--border);border-radius:var(--radius);background:var(--surface);padding:16px;margin-bottom:12px;box-shadow:var(--shadow)}
+.issue.is-selected{border-color:var(--accent);box-shadow:0 0 0 2px var(--accent-soft)}
+/* Sprint 2, NEW-B: the whole card is the click target, and the chosen one is unmistakable */
+.issue{cursor:pointer;transition:border-color .15s}
+.issue:hover{border-color:var(--accent)}
+.issue.is-selected{border-width:2px;border-color:var(--accent);background:var(--accent-soft);box-shadow:0 0 0 3px var(--accent-soft)}
+.issue.is-selected .pick{color:var(--accent)}
+.issue .head{display:flex;gap:10px;align-items:flex-start;justify-content:space-between;flex-wrap:wrap}
+.issue h3{margin:0;font-size:1.02rem}
+.issue .badges{display:flex;gap:6px;flex-wrap:wrap;margin:8px 0}
+.issue .rec{background:var(--accent);color:var(--accent-ink)}
+.www{display:grid;grid-template-columns:70px 1fr;gap:6px 12px;font-size:.92rem;margin:6px 0 0}
+.www dt{font-weight:700;color:var(--muted)}
+.www dd{margin:0}
+.www ol{margin:0;padding-left:18px}
+.www li{margin-bottom:4px}
+.pick{display:flex;align-items:center;gap:8px;font-weight:600;font-size:.9rem;cursor:pointer}
+.pick input{accent-color:var(--accent);width:18px;height:18px}
+.who{display:inline-block;font-size:.72rem;font-weight:700;border-radius:6px;padding:1px 7px;margin-right:6px;border:1px solid currentColor;vertical-align:1px;white-space:nowrap}
+.who.owner{color:var(--owner)} .who.dss{color:var(--dss)} .who.vendor{color:var(--vendor)}
+.why-v{display:block;color:var(--muted);font-size:.84rem;margin-top:2px}
+details.more summary{cursor:pointer;color:var(--accent);font-weight:600;margin:8px 0}
+.ba{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+@media (max-width:720px){.ba{grid-template-columns:1fr}}
+.mock{border:1px solid var(--border);border-radius:10px;overflow:hidden;background:var(--surface)}
+.mock .bar{background:var(--surface-2);font-size:.75rem;color:var(--muted);padding:6px 10px;display:flex;justify-content:space-between}
+.mock .body{padding:18px}
+.mock .hl{font-size:1.25rem;font-weight:800;line-height:1.25;margin:0 0 6px}
+.mock .sub{color:var(--muted);margin:0 0 12px;font-size:.92rem}
+.mock .cta{display:inline-block;background:var(--accent);color:var(--accent-ink);border-radius:8px;padding:8px 14px;font-weight:700;font-size:.88rem}
+.mock.before .hl{color:var(--muted)}
+.mock .none{color:var(--muted);font-style:italic}
+.copyrow{display:flex;justify-content:space-between;align-items:flex-start;gap:10px;padding:10px 0;border-top:1px solid var(--border)}
+.copyrow:first-child{border-top:0}
+.copyrow .lbl{font-size:.76rem;color:var(--muted);text-transform:uppercase;letter-spacing:.04em}
+.copyrow .val{font-weight:600}
+.copyrow pre{white-space:pre-wrap;margin:4px 0 0;font-size:.82rem;background:var(--surface-2);padding:8px;border-radius:8px}
+ol.hier{margin:0;padding-left:20px}
+ol.hier li{margin-bottom:4px}
+.legend{display:flex;gap:14px;flex-wrap:wrap;font-size:.85rem;color:var(--muted);margin-bottom:12px}
+table.plan{width:100%;border-collapse:collapse;font-size:.88rem}
+table.plan th,table.plan td{text-align:left;padding:9px 8px;border-top:1px solid var(--border);vertical-align:top}
+table.plan th{font-size:.76rem;text-transform:uppercase;letter-spacing:.04em;color:var(--muted);border-top:0}
+@media (max-width:720px){table.plan thead{display:none} table.plan tr{display:block;border-top:1px solid var(--border);padding:8px 0} table.plan td{display:block;border:0;padding:3px 0}}
+.rating{display:flex;gap:6px;flex-wrap:wrap}
+.rating label{border:1px solid var(--border);border-radius:8px;padding:6px 12px;cursor:pointer}
+.rating label:has(input:checked){background:var(--accent-soft);border-color:var(--accent)}
+.rating input{position:absolute;opacity:0;pointer-events:none}
+.rating label:focus-within{outline:2px solid var(--accent)}
+ol.act{margin:0;padding-left:22px}
+ol.act li{margin-bottom:12px}
+ul.changes,ol.changes{margin:0;padding-left:22px}
+.changes li{margin-bottom:12px}
+.sumline{margin:0 0 12px;font-size:.95rem}
+.start{display:inline-block;font-size:.72rem;font-weight:800;border-radius:6px;padding:1px 8px;margin-right:6px;background:var(--accent);color:var(--accent-ink);vertical-align:1px;white-space:nowrap}
+.xnote{display:block;color:var(--muted);font-size:.84rem;margin-top:2px}
+ul.told{margin:0;padding-left:18px;font-size:.92rem}
+ul.told li{margin-bottom:4px}
+.mock .after-line{font-size:1.05rem;font-weight:600;margin:0}
+.mock .what-line{margin:0;color:var(--muted)}
+.who-key{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px;margin:0 0 16px}
+.who-key>div{border:1px solid var(--border);border-radius:10px;padding:10px 12px;background:var(--surface);font-size:.88rem}
+.who-key p{margin:6px 0 0;color:var(--muted)}
+.k{display:inline-block;font-size:.72rem;font-weight:700;border-radius:6px;padding:1px 7px;border:1px solid currentColor;white-space:nowrap}
+.k.owner{color:var(--owner)} .k.dss{color:var(--dss)} .k.vendor{color:var(--vendor)}
+.copyrow .btn{flex:none}
+.copyrow .val.plain{font-weight:400}
+.reasons{margin:6px 0 0;padding-left:20px;font-weight:400}
+.badges-row{display:flex;gap:6px;flex-wrap:wrap;margin:0 0 10px}
+.toast{position:fixed;left:50%;bottom:20px;transform:translateX(-50%);background:var(--text);color:var(--bg);padding:9px 16px;border-radius:9px;font-size:.88rem;opacity:0;transition:opacity .2s;pointer-events:none;z-index:20}
+.toast.on{opacity:1}
+footer.foot{color:var(--muted);font-size:.8rem;padding:24px 0;border-top:1px solid var(--border)}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+/* v3 sample: compact label key, before/after illustration, screenshot upload */
+.legend-row{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin:0 0 14px}
+.legend-row details.lg{flex:1 1 100%}
+.legend-row details.lg summary{cursor:pointer;color:var(--accent);font-weight:600;font-size:.88rem}
+.legend-row details.lg p{margin:6px 0 0;font-size:.86rem;color:var(--muted)}
+.frame{border:1px solid var(--border);border-radius:8px;overflow:hidden;background:var(--surface)}
+.frame .tabbar{background:var(--surface-2);padding:5px 10px;font-size:.7rem;color:var(--muted);display:flex;gap:8px;align-items:center;white-space:nowrap;overflow:hidden}
+.frame .dots{letter-spacing:2px;font-size:.55rem;opacity:.6}
+.frame .pg{padding:10px 12px;font-size:.8rem}
+.frame .pg + .pg{border-top:1px dashed var(--border)}
+.frame.phone{max-width:240px;margin:0 auto}
+.frame.tiny .pg{font-size:.58rem}
+.mk-site{font-weight:800;font-size:.88rem}
+.mk-nav{display:flex;gap:10px;flex-wrap:wrap;color:var(--muted);font-size:.74rem;border-bottom:1px solid var(--border);padding:4px 0 6px;margin-bottom:6px}
+.mk-h{font-size:1.02rem;font-weight:800;line-height:1.25;margin:6px 0 4px}
+.mk-p{color:var(--muted);margin:0 0 6px}
+.mk-btns{display:flex;gap:6px;flex-wrap:wrap;margin:6px 0}
+.mk-btn{background:var(--accent);color:var(--accent-ink);border-radius:7px;padding:4px 10px;font-weight:700;font-size:.74rem}
+.mk-info{color:var(--muted);font-size:.74rem;margin:4px 0}
+.mk-foot{border-top:1px dashed var(--border);margin-top:8px;padding-top:4px;font-size:.68rem;color:var(--muted)}
+.mk-empty{font-style:italic;color:var(--muted)}
+.mk-serp .t{color:#1a0dab;font-size:.95rem;font-weight:600}
+.mk-serp .u{color:var(--good);font-size:.74rem}
+.mk-serp .s{color:var(--muted);font-size:.78rem}
+@media (prefers-color-scheme: dark){.mk-serp .t{color:#8ab4f8}}
+.chg{outline:2px solid var(--accent);outline-offset:2px;border-radius:4px;background:var(--accent-soft);-webkit-box-decoration-break:clone;box-decoration-break:clone;padding:0 2px}
+.bad{color:var(--high);text-decoration:line-through}
+input[type=file]{font:inherit;font-size:.88rem;max-width:100%}
+/* v3 sample: richer before/after */
+.frame .site-hd{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;padding:8px 12px;background:var(--surface-2);border-bottom:1px solid var(--border)}
+.frame .site-hd .mk-nav{display:flex;gap:10px;flex-wrap:wrap;color:var(--muted);font-size:.74rem;border:0;padding:0;margin:0}
+.frame .hero{padding:16px 14px 12px;background:linear-gradient(135deg,var(--accent-soft),var(--surface))}
+.frame .hero .mk-h{font-size:1.2rem;margin:0 0 6px}
+.frame .hero .mk-sub{font-weight:600;margin:0 0 6px;font-size:.88rem}
+.frame .hero .mk-btn{padding:8px 14px;font-size:.82rem}
+.frame .hero .mk-btns{margin:10px 0 2px}
+.frame .strip{display:flex;gap:8px;flex-wrap:wrap;align-items:center;padding:8px 14px;border-top:1px solid var(--border);font-size:.76rem}
+.pill-i{border:1px solid var(--border);border-radius:999px;padding:2px 10px;background:var(--surface)}
+.miss{display:inline-block;border:1.5px dashed var(--high);color:var(--high);background:var(--high-soft);border-radius:6px;padding:2px 8px;font-size:.74rem;font-weight:600}
+sup.co{display:inline-grid;place-items:center;width:16px;height:16px;border-radius:50%;background:var(--accent);color:var(--accent-ink);font-size:.62rem;font-weight:800;margin-left:3px;vertical-align:top;line-height:1}
+ol.chg-list{list-style:none;margin:10px 0 0;padding:0;font-size:.84rem}
+ol.chg-list li{margin:0 0 5px}
+ol.chg-list li.ok{color:var(--good);font-weight:600}
+.frame.tiny .hero .mk-h{font-size:.8rem}
+.frame.tiny .hero .mk-p,.frame.tiny .hero .mk-sub,.frame.tiny .site-hd .mk-nav,.frame.tiny .strip{font-size:.55rem}
+.frame.tiny .mk-site{font-size:.7rem}
+.frame.tiny .hero .mk-btn{padding:4px 8px;font-size:.55rem}
+@media print{
+  nav.steps,.no-print,.actions,.toast,footer.foot{display:none!important}
+  body{background:#fff;color:#000}
+  .card,.issue,.area{box-shadow:none;break-inside:avoid}
+}
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="wrap">
+    <div class="brand">
+      <div class="logo" aria-hidden="true">R</div>
+      <h1>Guided Website Renewal Assistant<small>For small businesses supported by a digital service squad</small></h1>
+    </div>
+    <span class="tag">Student prototype · DEI 623 · Sprint 3 (in progress)</span>
+  </div>
+</header>
+
+<nav class="steps" aria-label="Progress">
+  <div class="wrap">
+    <ol id="stepper">
+      <li><button type="button" data-go="0"><span class="n">1</span>Your site</button></li>
+      <li><button type="button" data-go="1"><span class="n">2</span>Assess</button></li>
+      <li><button type="button" data-go="2"><span class="n">3</span>Prioritize</button></li>
+      <li><button type="button" data-go="3"><span class="n">4</span>Next steps</button></li>
+      <li><button type="button" data-go="4"><span class="n">5</span>Your plan</button></li>
+    </ol>
+  </div>
+</nav>
+
+<main class="wrap">
+
+<!-- STEP 0: INPUT (US-01) -->
+<section class="view" id="v0" aria-labelledby="h0">
+  <h2 class="vh" id="h0" tabindex="-1">What should you fix first on your website?</h2>
+  <p class="lead">Tell us about your business and your website. In a few minutes you'll get a check of four areas and a ranked list of improvements, with the one we'd fix first. New wording and an action plan follow.</p>
+
+  <div class="card no-print">
+    <h3>Just trying it out?</h3>
+    <p style="margin:0 0 4px;color:var(--muted);font-size:.92rem">Load an example business to see the full journey. The first is the real sample site chosen by the project team (homepage source captured 28 Oct 2026); the other three are made up.</p>
+    <div class="samples" id="samples"></div>
+  </div>
+
+  <form id="form" novalidate>
+    <div class="card">
+      <h3>About your business</h3>
+      <div class="grid2">
+        <div>
+          <label class="f" for="name">Business name</label>
+          <input type="text" id="name" autocomplete="organization" required>
+          <div class="err" id="e-name"></div>
+        </div>
+        <div>
+          <label class="f" for="url">Website address</label>
+          <input type="url" id="url" inputmode="url" placeholder="www.yourbusiness.ca" required>
+          <div class="err" id="e-url"></div>
+        </div>
+        <div>
+          <label class="f" for="type">Type of business</label>
+          <select id="type" required></select>
+          <div class="err" id="e-type"></div>
+        </div>
+        <div>
+          <label class="f" for="city">Town or city you serve</label>
+          <input type="text" id="city" autocomplete="address-level2" placeholder="e.g. Kitchener" required>
+          <div class="err" id="e-city"></div>
+        </div>
+        <div style="grid-column:1/-1">
+          <label class="f" for="service">What do you mainly offer? <span class="hint">A few words, for example "registered massage therapy" or "fresh bread and pastries".</span></label>
+          <input type="text" id="service" required>
+          <div class="err" id="e-service"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>Five quick questions</h3>
+      <div class="q"><fieldset><legend>1. What is the main thing you want website visitors to do?</legend><div class="chips" id="q-goal"></div></fieldset><div class="err" id="e-goal"></div></div>
+      <div class="q"><fieldset><legend>2. How do most new customers find you?</legend><div class="chips" id="q-discovery"></div></fieldset><div class="err" id="e-discovery"></div></div>
+      <div class="q"><fieldset><legend>3. When was your website last updated?</legend><div class="chips" id="q-updated"></div></fieldset><div class="err" id="e-updated"></div></div>
+      <div class="q"><fieldset><legend>4. Is your website easy to use on a phone?</legend><div class="chips" id="q-mobile"></div></fieldset><div class="err" id="e-mobile"></div></div>
+      <div class="q"><fieldset><legend>5. Can customers find your phone number, address or hours within one or two clicks?</legend><div class="chips" id="q-findable"></div></fieldset><div class="err" id="e-findable"></div></div>
+    </div>
+
+    <div class="card">
+      <h3>Your homepage <span class="hint" style="display:inline">(optional, but gives a fuller check)</span></h3>
+      <p class="hint" style="margin:0 0 10px">We'll try to read your website automatically when you submit. Most websites don't allow that from a browser, so you can paste your homepage here instead.</p>
+      <label class="f" for="content">Paste your homepage text, or the page source for the fullest check
+        <span class="hint">Text: open your homepage, select all (Ctrl+A / ⌘A), copy and paste here. Page source: right-click the page → "View page source", select all, copy and paste. Without this, results rely on your answers only.</span>
+      </label>
+      <textarea id="content" spellcheck="false"></textarea>
+      <div class="hint" id="content-kind" aria-live="polite"></div>
+      <label class="f" for="shot" style="margin-top:14px">Optional: a screenshot of your homepage
+        <span class="hint">It is shown as your "Before" on the last screen and stays in this browser. PNG or JPG, under 6 MB.</span>
+      </label>
+      <input type="file" id="shot" accept="image/png,image/jpeg,image/webp">
+    </div>
+
+    <div class="actions">
+      <span class="hint">Nothing you enter leaves this browser.</span>
+      <button class="btn" type="button" id="submit">Assess my website →</button>
+    </div>
+  </form>
+</section>
+
+<!-- STEP 1: ASSESS (US-03) -->
+<section class="view" id="v1" aria-labelledby="h1" hidden>
+  <h2 class="vh" id="h1" tabindex="-1">Your website assessment</h2>
+  <p class="lead" id="assess-lead"></p>
+  <div class="notice" id="read-status" style="margin-bottom:16px" role="status"></div>
+  <div class="card">
+    <h3>What you told us</h3>
+    <dl class="answers" id="answers"></dl>
+  </div>
+  <div class="grid4" id="areas"></div>
+  <div class="actions" style="margin-top:20px">
+    <button class="btn ghost" type="button" data-go="0">← Edit answers</button>
+    <button class="btn" type="button" data-go="2">See what to fix first →</button>
+  </div>
+</section>
+
+<!-- STEP 2: PRIORITIZE (US-04) -->
+<section class="view" id="v2" aria-labelledby="h2" hidden>
+  <h2 class="vh" id="h2" tabindex="-1">What to fix first</h2>
+  <p class="lead">Each improvement is labelled <strong>High</strong>, <strong>Medium</strong> or <strong>Low</strong> by how much it gets in the way of your customers and by what you want visitors to do. One is marked <strong>Recommended first</strong>. If you disagree, pick a different one and the next steps will follow your choice.</p>
+  <div id="issues"></div>
+  <div class="actions" style="margin-top:20px">
+    <button class="btn ghost" type="button" data-go="1">← Back to assessment</button>
+    <button class="btn" type="button" data-go="3">Continue with this priority →</button>
+  </div>
+</section>
+
+<!-- STEP 3: HAND-OFF to Renew (US-06) and Act (US-08) -->
+<section class="view" id="v3" aria-labelledby="h3" hidden>
+  <h2 class="vh" id="h3" tabindex="-1">Next: wording and an action plan for your priority</h2>
+  <p class="lead" id="handoff-lead"></p>
+  <div class="notice" style="margin-bottom:16px"><strong>Next:</strong> <em>Your plan</em> shows a before and after of this priority, wording you can copy where it applies, and the steps to take, each marked as something you can do, DSS can help with, or may need a vendor.</div>
+  <div id="handoff"></div>
+  <details class="card no-print more">
+    <summary>For the project team: the data behind Your plan</summary>
+    <p class="hint" style="margin:0 0 10px">Everything the Your plan screen needs, in one object. Also available in the browser as <code>window.gwra.handoff()</code>; see <code>HANDOFF.md</code>.</p>
+    <div><pre id="handoff-json" style="white-space:pre-wrap;font-size:.78rem;background:var(--surface-2);padding:10px;border-radius:8px;max-height:420px;overflow:auto"></pre></div>
+    <div class="actions"><span></span><span style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn ghost small" type="button" id="copy-json">Copy data</button><button class="btn ghost small" type="button" id="dl-json">Download JSON</button></span></div>
+  </details>
+  <div class="actions">
+    <button class="btn ghost" type="button" data-go="2">← Change priority</button>
+    <span style="display:flex;gap:10px;flex-wrap:wrap">
+      <button class="btn ghost" type="button" id="print">Print or save as PDF</button>
+      <button class="btn ghost" type="button" id="restart">Start a new assessment</button>
+      <button class="btn" type="button" data-go="4">Get my plan →</button>
+    </span>
+  </div>
+</section>
+
+<!-- STEP 4: YOUR PLAN (Sprint 2, NEW-C): Renew (US-06) and Act (US-08) combined, with the before/after preview (US-05) and the three practical steps (US-07) -->
+<section class="view" id="v4" aria-labelledby="h4" hidden>
+  <h2 class="vh" id="h4" tabindex="-1">Your plan</h2>
+  <p class="lead" id="plan-lead"></p>
+  <div id="plan"></div>
+  <div class="card no-print" id="feedback">
+    <h3>Testing this prototype? Tell us how it went</h3>
+    <p class="hint" style="margin:0 0 12px" id="fb-time"></p>
+    <fieldset style="margin-bottom:12px"><legend>How clear is the ranked list? (1 = not at all, 5 = very)</legend>
+      <div class="rating" id="fb-help"></div>
+    </fieldset>
+    <fieldset style="margin-bottom:12px"><legend>How confident do you feel about what to fix first? (1 = not at all, 5 = very)</legend>
+      <div class="rating" id="fb-conf"></div>
+    </fieldset>
+    <fieldset style="margin-bottom:12px"><legend>How useful was the suggested wording or list of changes? (1 = not at all, 5 = very)</legend>
+      <div class="rating" id="fb-wording"></div>
+    </fieldset>
+    <fieldset style="margin-bottom:12px"><legend>How clear was it who can do each step: you, DSS or a vendor? (1 = not at all, 5 = very)</legend>
+      <div class="rating" id="fb-who"></div>
+    </fieldset>
+    <label class="f" for="fb-confused">Where, if anywhere, did you feel confused?</label>
+    <textarea id="fb-confused" style="min-height:70px;font-family:var(--font);font-size:.95rem"></textarea>
+    <div class="actions">
+      <button class="btn" type="button" id="fb-save">Save my feedback</button>
+      <span><button class="btn ghost small" type="button" id="fb-export">Download all test results (CSV)</button> <span class="hint" id="fb-count"></span></span>
+    </div>
+  </div>
+  <div class="actions">
+    <button class="btn ghost" type="button" data-go="3">← Back to next steps</button>
+    <span style="display:flex;gap:10px;flex-wrap:wrap">
+      <button class="btn ghost" type="button" id="copy-plan">Copy my plan</button>
+      <button class="btn ghost" type="button" id="dl-plan">Download plan</button>
+      <button class="btn ghost" type="button" id="print-plan">Print or save as PDF</button>
+      <button class="btn ghost" type="button" id="restart-plan">Start a new assessment</button>
+    </span>
+  </div>
+  <p class="hint no-print" style="margin-top:8px">If “Print or save as PDF” does nothing (some preview windows block printing), use “Download plan”, open the file in your browser and print it from there. “Copy my plan” copies every step as plain text.</p>
+</section>
+</main>
+
+<footer class="foot">
+  <div class="wrap">Student prototype for a DEI 623 course project (Sprint 3, in progress). Not an official City of Kitchener or Digital Main Street service. Results come from a rule-based checklist and are a starting point for a conversation, not a full audit.</div>
+</footer>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script>
+(function(){
+"use strict";
+const YEAR = new Date().getFullYear();
+const $ = (s, r=document) => r.querySelector(s);
+const $$ = (s, r=document) => [...r.querySelectorAll(s)];
+const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const fill = (tpl, o) => tpl.replace(/\{(\w+)\}/g, (_, k) => o[k] ?? "");
+const words = s => (String(s||"").match(/[A-Za-zÀ-ÿ0-9'’-]+/g) || []).length;
+const cap = s => s ? s.charAt(0).toUpperCase() + s.slice(1) : s;
+const store = {
+  get(k, d){ try{ const v = localStorage.getItem(k); return v ? JSON.parse(v) : d; }catch(e){ return d; } },
+  set(k, v){ try{ localStorage.setItem(k, JSON.stringify(v)); return true; }catch(e){ return false; } }
+};
+
+/* ---------- Reference data ---------- */
+const TYPES = {
+  food:{label:"Restaurant, café or bakery", noun:"bakery café", benefit:"Fresh, made-in-house food from a local favourite", kw:["menu","food","coffee","bakery","bake","restaurant","café","cafe","eat","dine","bread","pastr","lunch","breakfast","dinner","kitchen"]},
+  retail:{label:"Retail shop", noun:"shop", benefit:"A locally owned shop with things you won't find everywhere", kw:["shop","store","products","gift","boutique","retail","collection","brand"]},
+  wellness:{label:"Salon, spa, health or wellness", noun:"clinic", benefit:"Skilled, caring treatment, and booking takes a minute", kw:["massage","therap","salon","spa","wellness","treatment","clinic","hair","nail","health","physio","appointment","rmt"]},
+  professional:{label:"Professional service (e.g. accounting, legal)", noun:"firm", benefit:"Expert advice, explained in plain language", kw:["service","consult","advice","accounting","legal","tax","firm","client","bookkeep","lawyer"]},
+  trades:{label:"Trades or home service", noun:"company", benefit:"Reliable, licensed work with clear, upfront quotes", kw:["repair","install","electric","plumb","renovat","contractor","licensed","hvac","roof","landscap"]},
+  other:{label:"Other", noun:"business", benefit:"Friendly local service you can count on", kw:["service","local","team"]}
+};
+const GOALS = {
+  call:{label:"Call us", cta:"Call {name}", kw:["call","phone","tel:"], line:"Call us during business hours. We're happy to help."},
+  book:{label:"Book an appointment", cta:"Book an appointment", kw:["book","appointment","schedul","reserv"], line:"Booking online takes less than a minute."},
+  visit:{label:"Visit our location", cta:"Get directions", kw:["visit","direction","find us","location","map","drop by","stop by"], line:"Drop by. Our hours and directions are below."},
+  order:{label:"Order or buy online", cta:"Order online", kw:["order","shop now","buy","cart","checkout","delivery","pickup","pick-up"], line:"Order online for pickup or delivery."},
+  inquiry:{label:"Send an inquiry or ask for a quote", cta:"Request a free quote", kw:["contact us","quote","get in touch","inquir","enquir","email us","message us","estimate","send us"], line:"Tell us what you need and we'll reply within [one business day]."},
+  // Sprint 2, NEW-A: customers who would rather message than call (MJ's company's customers asked for WhatsApp)
+  message:{label:"Message us (text or WhatsApp)", cta:"Message us on WhatsApp", kw:["whatsapp","wa.me","text us","message us","sms:","send us a text","send a text"], line:"Send us a message on WhatsApp or by text."}
+};
+// A ready-to-use WhatsApp link from a phone number. North American 10-digit numbers get the +1 country code.
+function waLinkFor(phone){
+  const n = String(phone || "").replace(/\D/g, "");
+  if(n.length === 10) return "https://wa.me/1" + n;
+  if(n.length === 11 && n[0] === "1") return "https://wa.me/" + n;
+  return n.length >= 8 ? "https://wa.me/" + n : "";
+}
+const DISCOVERY = {search:"Searching online (e.g. Google)", social:"Social media", word:"Word of mouth", walk:"Walking or driving by"};
+const UPDATED = {"recent":"In the last 6 months", "year":"6–12 months ago", "old":"1–3 years ago", "veryold":"More than 3 years ago", "unsure":"Not sure"};
+const YNU = {yes:"Yes", unsure:"Not sure", no:"No"};
+const AREAS = [
+  {id:"mobile", name:"Mobile-friendliness", short:"Mobile"},
+  {id:"content", name:"Content clarity", short:"Content"},
+  {id:"nav", name:"Navigation & contact path", short:"Navigation"},
+  {id:"search", name:"Basic search signals", short:"Search"}
+];
+const SEV_W = {High:3, Medium:2, Low:1};
+const PATH = {0:{label:"Directly affects customers contacting or buying", w:4}, 1:{label:"Affects trust or being found", w:3}, 2:{label:"Supporting detail", w:2}, 3:{label:"Polish", w:1}};
+const GOAL_CHECKS = {call:["n-phone","m-tel"], visit:["n-visit"], inquiry:["n-route"], book:[], order:[], message:["n-wa","n-route"]};
+// Sprint 3, NEW-D1 (AC tightened by the PO, 14 Nov): what counts as a way to book or order online.
+// - Booking: a link or button that leads to online booking: its address goes to a booking service or page, or its wording reads
+//   like a booking button ("Book now"). A phone number, an email or "Contact us" does not count.
+// - Ordering: only a cart, checkout or online payment: a cart or checkout page, an online store, ordering or payment service, or
+//   wording such as "Add to cart" or "Pay online". "Order now" alone does not count, because it may lead to an order form (Cake Box);
+//   it is kept as a "hint" so the finding can mention it.
+// The review sees only the homepage, so a found case is worded "appears to offer".
+const ONLINE = {
+  book:{noun:"booking", verb:"book", button:"Book online", thing:"a link or button that leads to online booking",
+    none:"No link or button that leads to online booking found",
+    hosts:/(calendly\.com|acuityscheduling\.com|\bas\.me\/|squareup\.com\/appointments|book\.squareup\.com|square\.site\/book|booksy\.com|vagaro\.com|fresha\.com|mindbodyonline\.com|mindbody\.io|janeapp\.com|simplybook\.|setmore\.com|schedulicity\.com|genbook\.com|booker\.com|massagebook\.com|bookeo\.com|gettimely\.com|glossgenius\.com|styleseat\.com|zocdoc\.com|clinicsense\.com|opentable\.|resy\.com|exploretock\.com|youcanbook\.me|calendar\.app\.google)/i,
+    paths:/\/(book|booking|bookings|book-online|book-now|online-booking|appointment|appointments|reserve|reservations?)(\/|\?|#|$|\.)/i,
+    // button-style labels only: they must start with the verb, so "Book club meets Tuesdays" or "Call us to book an appointment" do not count
+    words:/^(?:(?:book|reserve)(?: (?:now|online|today|here|your|my|an?|free))*(?: (?:appointment|session|class|massage|visit|table|time|spot|consultation|reservation|stay))?(?: (?:now|online|today)){0,2}|schedule (?:an? (?:appointment|visit|session|class)|online|now)|request an appointment|make a reservation)[.!]?$/i,
+    hint:null},
+  order:{noun:"ordering", verb:"order", button:"Order online", thing:"a cart, checkout or way to pay online",
+    none:"No cart, checkout or online payment found",
+    hosts:/(myshopify\.com|shopify\.com|square\.site|squareup\.com\/(store|order|checkout|pay)|square\.link|ubereats\.com|doordash\.com|skipthedishes\.com|grubhub\.com|toasttab\.com|order\.online|clover\.com|chownow\.com|gloriafood|ritual\.co|etsy\.com|bigcartel\.com|ecwid\.com|paypal\.com|paypal\.me|buy\.stripe\.com|checkout\.stripe\.com)/i,
+    paths:/\/(cart|checkout|basket)(\/|\?|#|$|\.)/i,
+    words:/^(cart|basket|shopping cart|my cart|your cart)\b.{0,12}$|\b(add to (cart|bag|basket)|view (cart|bag|basket)|checkout|pay (online|now)|buy now)\b/i,
+    hint:/\b(order (online|now|here|ahead|today|for pickup|for delivery)|start (an |your )?order|place (an |your )?order|shop (now|online)|buy online)\b/i}
+};
+// an address that is an order or request form, not online ordering
+const FORM_ADDR = /(^|[\/_.\-])(order[-_]?)?forms?([\/_.\-?#]|$)|typeform\.com|jotform\.com|wufoo\.com|formstack\.com|cognitoforms\.com/i;
+
+/* ---------- Sample businesses (fictional) ---------- */
+const SAMPLES = [
+  {key:"falcon", label:"Falcon Massage & Bodywork (real site, page source)", data:{
+    name:"Falcon Massage & Bodywork", url:"www.falconmassage.net", type:"wellness", city:"Palm Bay",
+    service:"therapeutic massage for chronic pain and stress", goal:"book", discovery:"search", updated:"old", mobile:"unsure", findable:"unsure",
+    content:`<!doctype html>
+<html>
+<head>
+<meta name="viewport" content="initial-scale=1, width=device-width">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<link rel="canonical" href="https://www.falconmassage.net/">
+<meta name="keywords" content="Palm Bay FL Massage Therapy | Ron Falcon, massage near me, massage in palm bay, fl, massage 32905">
+<meta name="description" content="Therapeutic massage for pain relief and stress management. Board approved provider of massage therapy continuing education classes for licensed LMTs.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://www.falconmassage.net">
+<meta property="og:title" content="HOME - falconmassage">
+<meta property="og:description" content="Therapeutic massage for pain relief and stress management. Board approved provider of massage therapy continuing education classes for licensed LMTs.">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="HOME - falconmassage">
+<title>HOME - falconmassage</title>
+</head>
+<body>
+<div>
+<header>
+<div><div><div><div><div>
+<ul>
+<li><a href="/"><div><span>HOME</span></div></a></li>
+<li><a href="/"><div><span>ABOUT</span> <span><i></i></span></div></a>
+<ul>
+<li><a href="/integrated-massage-therapy"><div><span>Integrated Massage Therapy</span></div></a></li>
+<li><a href="/mass"><div><span>MASSAGE BENEFITS</span></div></a></li>
+<li><a href="/aboutus"><div><span>ABOUT US</span></div></a></li>
+<li><a href="/reviews"><div><span>REVIEWS</span></div></a></li>
+</ul></li>
+<li><a href="/contact"><div><span>CONTACT</span></div></a></li>
+<li><a href="/"><div><span>CLASSES</span> <span><i></i></span></div></a>
+<ul>
+<li><a href="/2026-palm-bay-live-ce-classes"><div><span>Live Massage Therapy CE Classes</span></div></a></li>
+<li><a href="/massage-ce-class-descriptions"><div><span>CLASS DESCRIPTIONS</span></div></a></li>
+<li><a href="/students-comments"><div><span>STUDENT COMMENTS</span></div></a></li>
+<li><a href="/students-comments"><div><span>STUDENT COMMENTS</span></div></a></li>
+</ul></li>
+<li><a href="/self-care-links-resources"><div><span>SELF HELP LINKS</span></div></a></li>
+</ul>
+</div></div></div>
+<div><div><h4><span><u><span><strong><span>Falcon Massage &amp; Bodywork</span></strong></span></u></span></h4></div></div>
+<div><div><p><span><strong><span>CALL NOW: (321) 952-6633</span></strong></span></p></div></div>
+</div></div>
+</header>
+<div><div><div><div>
+<div><a href="/massage-ce-class-descriptions"><div>Continuing Education</div></a></div>
+<div></div>
+<div><div><a href="https://courses.cebroker.com/providers/10872-ron-falcon?coursePageIndex=1&amp;profession=21&amp;sortField=RELEVANCE&amp;state=FL" target="_blank"><img src="//site-b7gxjsmv.wsecdn1.websitecdn.com/uploads/r/948-532-636-532-152-0/B8A49EAFD9391757.png?v=231004025316" alt=""></a></div></div>
+<div><div><img src="//site-b7gxjsmv.wsecdn1.websitecdn.com/uploads/r/960-556-960-278-0-139/688fcf4ebc8e4336b7b34d0855f22318.jpg?v=231004025316" alt="20221003_145301"></div></div>
+<div><div><p><span>Welcome and thank you for visiting the website for Falcon Massage and Bodywork, a massage therapy studio&nbsp;owned and operated by Ron and Rhonda Falcon. We are&nbsp;a husband/wife team of professional, licensed massage therapists specializing in massage therapy for people dealing with chronic pain and high stress.&nbsp; Massage therapy is increasingly recognized as an effective holistic treatment for individuals suffering from chronic pain and high stress. Whether you need deep tension relief, re<span>laxation, or a mix of both, e</span></span><span>ach of our massage sessions are tailored to meet your unique needs. This customized approach is goal-oriented to provide both targeted pain relief and a deeply relaxing massage session. If you're interested in adding massage therapy to your wellness plan&nbsp;or curious whether we could be a good fit for you, please call 321-952-6633 for questions or to make an appointment.</span></p>
+<p>&nbsp;</p></div></div>
+<div><div><p><span><span><span>Our massage therapy office&nbsp;is located in Palm Bay, right on Palm Bay Road. Ron has been a practicing licensed massage therapist since 2005 and a Florida massage therapy continuing education provider since 2008. Rhonda&nbsp; received her massage therapy license in 2013 and continues to study and develop new skills continuosly. Read more about our experience on the <span><a href="/aboutus">About Us Page</a></span>.</span></span></span></p></div></div>
+<div><div><h1><span><span><span>Integrated therapeutic massage for chronic pain relief and stress management</span></span></span></h1></div></div>
+<div><div><p><span><span><span>Florida Approved Provider</span></span></span></p>
+<p><span><span><span>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; #50-10872&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;</span></span></span></p></div></div>
+<div><div><h5><span><span><span><span>Massage Therapy Continuing Education</span></span></span></span></h5></div></div>
+<div><div><h5><span><span><span>Call 321-952-6633 (a landline) to make an appointment</span></span></span></h5></div></div>
+<div><div></div></div><div><div></div></div><div><div></div></div>
+<div><div><p><span><span>Falcon Massage and Bodywork </span></span></p>
+<p><span><span>Established in 2010</span></span></p>
+<p><span><span>Located at:</span></span></p>
+<p><span><span>2060 Palm Bay Road, Suite 2</span></span></p>
+<p><span><span>Palm Bay, FL 32905</span></span></p></div></div>
+<div><div><p><span><span><span>"Massage has had a positive effect on every medical condition we've looked at."</span></span></span></p>
+<p><span><span><span>Tiffany Field Ph.D,</span> <span><a href="http://pediatrics.med.miami.edu/community-outreach/touch-research-institute" target="_blank"><span><span>Touch Institute University of Miami&nbsp;</span></span></a></span></span></span></p></div></div>
+</div></div></div></div>
+<footer>
+<div><div><div><div><div><div><div><div>&nbsp;</div></div></div></div>
+<div><div><p><span><span>Falcon Massage &amp; Bodywork<font color="#002000" face="arial,helvetica,sans-serif"> &nbsp; </font></span></span><span><span>2060 Palm Bay Road, Suite 2 &nbsp; </span></span><span><span>Palm Bay, FL 32905 &nbsp; 321-952-6633<font color="#002000" face="arial,helvetica,sans-serif"> &nbsp; </font></span></span><span><span>www.falconmassage.net&nbsp; Massage&nbsp;Establishment&nbsp;#mm25480&nbsp; &nbsp; fl lic ma44011&nbsp; &nbsp; fl lic ma71549&nbsp; &nbsp; &nbsp; &nbsp; By appoinment only</span></span></p></div></div>
+<div><div><p><span><span>Copyright 2019 Website.com. All Rights Reserved.</span></span></p></div></div>
+</div></div></div>
+</footer>
+</div>
+</body>
+</html>`}},
+  {key:"spa", label:"Riverbend Massage Therapy (old site, page source)", data:{
+    name:"Riverbend Massage Therapy", url:"www.riverbend-massage.example", type:"wellness", city:"Kitchener",
+    service:"registered massage therapy", goal:"book", discovery:"search", updated:"veryold", mobile:"unsure", findable:"unsure",
+    content:`<html><head><title>Home</title></head><body>
+<table width="960"><tr><td>
+<font size="5"><b>Welcome to Riverbend</b></font>
+<h1>Welcome!</h1>
+<h1>Riverbend Massage Therapy</h1>
+<a href="index.html">Home</a> | <a href="about.html">About Us</a> | <a href="#">Contact</a>
+<img src="logo.gif"><img src="room.jpg"><img src="badge.png" alt="RMT badge">
+<p>Riverbend has been helping people feel better for many years and our team of registered massage therapists is dedicated to providing excellent care to every client who walks through our doors, whether you are dealing with stress, sports injuries, chronic pain, or simply want to relax after a long week, and we offer a wide range of treatments including relaxation massage, deep tissue massage, hot stone massage, prenatal massage and more, all delivered in a calm and welcoming environment where your comfort is always our top priority and we take the time to listen to your needs before every session so that we can tailor the treatment to you.</p>
+<p>Most extended health plans cover registered massage therapy. Please check with your provider.</p>
+<p>Phone: 519-555-0142</p>
+<p>&copy; 2019 Riverbend Massage Therapy</p>
+</td></tr></table>
+</body></html>`}},
+  {key:"bakery", label:"Northside Bakery (pasted text)", data:{
+    name:"Northside Bakery", url:"northsidebakery.example", type:"food", city:"Waterloo",
+    service:"fresh bread, pastries and coffee", goal:"visit", discovery:"walk", updated:"year", mobile:"yes", findable:"no",
+    content:`Northside Bakery
+Fresh bread, pastries and coffee, baked every morning in Waterloo.
+
+Our story
+We started baking in a small home kitchen in 2015 and opened our first shop three years later. Everything is made from scratch with local flour.
+
+What we bake
+Sourdough loaves · Croissants · Cinnamon buns · Seasonal pies · Custom cakes (order 3 days ahead)
+
+Follow us on Instagram for daily specials.
+
+Questions? Email hello@northsidebakery.example
+
+© ${YEAR} Northside Bakery`}},
+  {key:"cakebox", label:"The Cake Box (ordering sample, simplified from the team's notes)", data:{
+    name:"The Cake Box", url:"cakebox.ca", type:"food", city:"Kitchener",
+    service:"custom cakes and baked goods", goal:"order", discovery:"search", updated:"year", mobile:"yes", findable:"yes",
+    // Stand-in built from what the team recorded (Order Now goes to /orders/, the order form is at /orders-2/, no cart, checkout or online payment).
+    // To use the real page, replace this text with the page source you copied.
+    content:`<!doctype html>
+<html><head>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The Cake Box | Custom cakes in Kitchener</title>
+<meta name="description" content="Custom cakes and baked goods made to order in Kitchener. Send us your order request and we will get back to you.">
+</head><body>
+<header><nav><a href="/">Home</a> <a href="/cakes/">Cakes</a> <a href="/orders/">Order Now</a> <a href="/about/">About</a> <a href="/contact/">Contact</a></nav></header>
+<h1>Custom cakes made to order</h1>
+<p>Birthday, wedding and celebration cakes, cupcakes and treats, baked fresh in Kitchener.</p>
+<img src="cake1.jpg" alt="Layered birthday cake"><img src="cake2.jpg" alt="Cupcakes">
+<p><a href="/orders/">Order Now</a></p>
+<p>Questions? Call 519-555-0123, Tuesday to Saturday, 10am to 5pm.</p>
+<footer>&copy; ${YEAR} The Cake Box · 100 Example St, Kitchener, ON N2G 0A0</footer>
+</body></html>`}},
+  {key:"trades", label:"Brightline Electrical (newer site, page source)", data:{
+    name:"Brightline Electrical", url:"https://brightline-electrical.example", type:"trades", city:"Cambridge",
+    service:"residential electrical repairs and upgrades", goal:"inquiry", discovery:"search", updated:"recent", mobile:"yes", findable:"yes",
+    content:`<!doctype html>
+<html><head>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Brightline Electrical | Electricians in Cambridge, ON</title>
+<meta name="description" content="Licensed electricians serving Cambridge and Waterloo Region for panel upgrades, EV chargers, lighting and repairs.">
+</head><body>
+<header><nav><a href="/">Home</a> <a href="/services">Services</a> <a href="/about">About</a></nav></header>
+<h1>Licensed electricians in Cambridge</h1>
+<p>Panel upgrades, EV charger installs, lighting and repairs for homes across Cambridge and Waterloo Region.</p>
+<img src="van.jpg" alt="Brightline Electrical service van"><img src="panel.jpg">
+<h2>Services</h2>
+<ul><li>Panel upgrades</li><li>EV charger installation</li><li>Lighting and pot lights</li><li>Troubleshooting and repairs</li></ul>
+<p>Call 519-555-0187, Monday to Friday, 8am to 5pm.</p>
+<footer>&copy; ${YEAR} Brightline Electrical · 45 Example Rd, Cambridge, ON N1R 0A0</footer>
+</body></html>`}}
+];
+
+/* ---------- Parsing the pasted homepage ---------- */
+function parseContent(raw){
+  const r = {hasContent:false, isHTML:false, title:null, metaDesc:null, viewport:null, h1:[], imgs:0, imgsNoAlt:0,
+    links:[], buttons:[], frames:[], formActions:[], tel:false, mailto:false, forms:0, schema:false, oldTech:false, text:"", paragraphs:[], headline:""};
+  const s = String(raw||"").trim();
+  if(!s) return r;
+  r.hasContent = true;
+  r.isHTML = /<\s*(html|head|body|div|p|h[1-6]|meta|title|section|header|img|table)\b[^>]*>/i.test(s);
+  if(r.isHTML){
+    const doc = new DOMParser().parseFromString(s, "text/html"); // parsed only, never inserted or run
+    $$('script[type="application/ld+json"]', doc).forEach(n => { if(/"@type"/.test(n.textContent)) r.schema = true; });
+    if(doc.querySelector('[itemtype*="schema.org"]')) r.schema = true;
+    $$("script,style,noscript,template", doc).forEach(n => n.remove());
+    const t = doc.querySelector("title"); r.title = t ? t.textContent.trim() : null;
+    $$("meta", doc).forEach(m => {
+      const n = (m.getAttribute("name")||"").toLowerCase();
+      if(n === "description") r.metaDesc = (m.getAttribute("content")||"").trim();
+      if(n === "viewport") r.viewport = (m.getAttribute("content")||"").trim();
+    });
+    r.h1 = $$("h1", doc).map(h => h.textContent.trim()).filter(Boolean);
+    const imgs = $$("img", doc); r.imgs = imgs.length; r.imgsNoAlt = imgs.filter(i => !(i.getAttribute("alt")||"").trim()).length;
+    r.links = $$("a", doc).map(a => ({href:(a.getAttribute("href")||"").trim(), text:a.textContent.trim()}));
+    r.tel = r.links.some(l => /^tel:/i.test(l.href));
+    r.mailto = r.links.some(l => /^mailto:/i.test(l.href));
+    r.forms = $$("form", doc).length;
+    // Sprint 3, NEW-D1: buttons, embedded widgets and form targets, so a booking or ordering button that isn't a plain link is still seen
+    r.buttons = $$('button, input[type="submit"], input[type="button"], [role="button"]', doc).map(b => (b.getAttribute("value") || b.textContent || "").trim()).filter(Boolean);
+    r.frames = $$("iframe", doc).map(f => (f.getAttribute("src") || "").trim()).filter(Boolean);
+    r.formActions = $$("form", doc).map(f => (f.getAttribute("action") || "").trim()).filter(Boolean);
+    r.oldTech = !!doc.querySelector("frameset,frame,applet,marquee") ||
+      $$("embed,object", doc).some(e => /\.swf/i.test(e.getAttribute("src")||e.getAttribute("data")||"")) ||
+      $$("table", doc).some(tb => parseInt(tb.getAttribute("width")||"0",10) >= 700) ||
+      (!r.viewport && $$("font,center", doc).length >= 2); // a few <font> tags on an otherwise responsive page are cosmetic, not a rebuild
+    const body = doc.body || doc.documentElement;
+    $$("p,div,li,h1,h2,h3,h4,h5,h6,br,tr,td,section,header,footer,nav,article,font,a", body).forEach(el => el.after("\n"));
+    r.text = body.textContent.replace(/[ \t ]+/g," ").replace(/\n\s*\n+/g,"\n").trim();
+    r.paragraphs = $$("p", doc).map(p => p.textContent.trim()).filter(x => words(x) >= 5);
+    const h2 = doc.querySelector("h2");
+    r.headline = r.h1[0] || (h2 && h2.textContent.trim()) || "";
+  } else {
+    r.text = s;
+    let blocks = s.split(/\n\s*\n/).map(b => b.trim()).filter(Boolean);
+    if(blocks.length <= 1) blocks = s.split(/\n/).map(b => b.trim()).filter(Boolean);
+    r.paragraphs = blocks.filter(b => words(b) >= 5);
+    const lines = s.split(/\n/).map(x => x.trim()).filter(Boolean);
+    // first short line that reads like a headline (skip a bare business-name line if a second line exists)
+    r.headlineLines = lines.slice(0,3);
+    r.headline = lines[0] && words(lines[0]) <= 16 ? lines[0] : "";
+  }
+  return r;
+}
+
+// Sprint 3, NEW-D1: is there a way to book or order online on the homepage? Only for owners whose goal is booking or ordering.
+// With the page source we look at links, buttons, embedded widgets and form targets, and where each one leads. With pasted text we
+// can only see wording, so a short line that reads like a button ("Book now", "Add to cart") counts; a sentence like "call us to make
+// an appointment" does not. A button that looks right but leads somewhere else (phone, email, contact page, order form) is kept
+// as a hint, so the finding can explain why it didn't count.
+function onlineTool(inp, p){
+  const O = ONLINE[inp.goal], none = {found:false, label:"", where:"", hint:null};
+  if(!O || !p.hasContent) return none;
+  const looks = t => !!t && t.length <= 40 && (O.words.test(t) || (!!O.hint && O.hint.test(t)));
+  const hostOf = h => { try{ return new URL(h, "https://site.invalid").hostname.replace(/^www\./, ""); }catch(e){ return h; } };
+  let hint = null;
+  const note = (label, why) => { if(!hint && label) hint = {label, why}; };
+  if(p.isHTML){
+    const cands = [...p.links, ...p.buttons.map(t => ({text:t, href:""})), ...p.frames.map(h => ({text:"", href:h})), ...p.formActions.map(h => ({text:"", href:h}))];
+    for(const c of cands){
+      const t = (c.text || "").replace(/\s+/g, " ").trim(), raw = (c.href || "").trim();
+      if(/^(tel|sms):/i.test(raw)){ if(looks(t)) note(t, /^sms:/i.test(raw) ? "text" : "phone"); continue; }
+      if(/^mailto:/i.test(raw)){ if(looks(t)) note(t, "email"); continue; }
+      const h = /^javascript:/i.test(raw) ? "" : raw;           // a script link behaves like a button: we can't see where it leads
+      if(inp.goal === "book" && /contact/i.test(h) && !O.hosts.test(h)){ if(looks(t)) note(t, "contact"); continue; }
+      if(inp.goal === "order" && (FORM_ADDR.test(h) || /\border[\s-]?forms?\b/i.test(t))){ if(looks(t) || /\border/i.test(t)) note(t || "order form", "form"); continue; }
+      const byHref = !!h && (O.hosts.test(h) || O.paths.test(h));
+      const byText = !!t && t.length <= 40 && O.words.test(t);
+      if(byHref || byText){ const host = hostOf(h); return {found:true, label:t, where: t ? "" : (host === "site.invalid" ? h : host), hint:null}; }
+      if(O.hint && t && t.length <= 40 && O.hint.test(t)) note(t, "unclear");
+    }
+    return {...none, hint};
+  }
+  const lines = String(p.text || "").split(/\n/).map(x => x.trim()).filter(x => x && words(x) <= 6);
+  const line = lines.find(x => O.words.test(x));
+  if(line) return {found:true, label:line, where:"", hint:null};
+  // a hint must look like a button label (four words or fewer, no full stop), not a sentence such as "Order ahead by phone."
+  const near = O.hint ? lines.find(x => words(x) <= 4 && !/[.!?]$/.test(x) && O.hint.test(x)) : null;
+  return {...none, hint: near ? {label:near, why:"unclear"} : null};
+}
+
+function signals(inp, p){
+  const text = (p.text || "");
+  const lower = text.toLowerCase();
+  const linkText = p.links.map(l => (l.text + " " + l.href).toLowerCase()).join(" ");
+  const all = lower + " " + linkText;
+  const phoneM = text.match(/(\+?1[\s.-]?)?\(?\d{3}\)?[\s.-]\d{3}[\s.-]\d{4}\b/);
+  const emailM = text.match(/[\w.+-]+@[\w-]+\.[\w-]+(\.[\w-]+)*/);
+  const phone = !!phoneM || p.tel, email = !!emailM || p.mailto;
+  const phoneStr = phoneM ? phoneM[0].trim() : "", emailStr = emailM ? emailM[0] : "";
+  const address = /\b[A-Z]\d[A-Z]\s?\d[A-Z]\d\b/i.test(text) || /\b\d{1,5}\s+[A-Z][\w.'-]*(\s+[A-Z][\w.'-]*)*\s+(st|street|ave|avenue|rd|road|dr|drive|blvd|boulevard|way|lane|ln|cres|crescent|ct|court|pl|place|hwy|highway)\b/i.test(text);
+  const hours = /\b(mon|tue|wed|thu|fri|sat|sun)[a-z]*\.?\b[^\n]{0,30}\d/i.test(text) || /\bhours\b/i.test(text) || /\b\d{1,2}(:\d\d)?\s?(am|pm)\b/i.test(text);
+  const isHomeHref = h => { h = (h||"").trim().toLowerCase(); return h === "" || h === "#" || h === "/" || /^(index|home|default)\.(html?|php)$/.test(h) || /^https?:\/\/[^/]+\/?$/.test(h); };
+  const loopedLinks = p.links.filter(l => l.text && !/^home$/i.test(l.text.trim()) && isHomeHref(l.href) && l.text.trim().length <= 40);
+  const contactLinks = p.links.filter(l => /contact/i.test(l.text + " " + l.href));
+  const contactLinkOk = contactLinks.some(l => l.href && l.href !== "#" && !/^javascript:/i.test(l.href));
+  const contactLinkBroken = contactLinks.length > 0 && !contactLinkOk;
+  const goal = GOALS[inp.goal];
+  const cta = goal ? goal.kw.some(k => all.includes(k)) : false;
+  const msgLink = p.links.some(l => /wa\.me\/|whatsapp\.com\/|^whatsapp:|^sms:/i.test((l.href || "").trim()));
+  const city = (inp.city||"").trim().toLowerCase();
+  const cityMention = !!city && lower.includes(city);
+  const nameMention = !!inp.name && lower.includes(inp.name.toLowerCase());
+  const serviceWords = (inp.service||"").toLowerCase().split(/[^a-zà-ÿ]+/).filter(w => w.length > 3 && !["fresh","with","from","their","your","services","service"].includes(w));
+  const typeKw = (TYPES[inp.type]?.kw || []).some(k => lower.includes(k)) || serviceWords.some(w => lower.includes(w));
+  let crYear = null;
+  const crRe = /(©|&copy;|\(c\)|copyright)\s*(\d{4})(\s*[-–]\s*(\d{4}))?/gi; let m;
+  while((m = crRe.exec(text))){ const y = parseInt(m[4]||m[2],10); if(!crYear || y > crYear) crYear = y; }
+  const wc = words(text);
+  const pw = p.paragraphs.map(words);
+  const avgPara = pw.length ? pw.reduce((a,b)=>a+b,0)/pw.length : 0;
+  const longest = pw.length ? Math.max(...pw) : 0;
+  const online = onlineTool(inp, p);
+  return {loopedLinks, phone, email, phoneStr, emailStr, address, hours, contactLinkOk, contactLinkBroken, cta, msgLink, online, cityMention, nameMention, typeKw, serviceWords, crYear, wc, avgPara, longest};
+}
+
+/* ---------- Checks (Falcon-audit checklist, mapped to the 4 areas) ---------- */
+const NEED_TEXT = "Paste your homepage to check this.";
+const NEED_HTML = "Paste the page source (not just the text) to check this.";
+function needs(ctx, kind){
+  if(!ctx.p.hasContent) return {status:"unknown", detail:NEED_TEXT};
+  if(kind === "html" && !ctx.p.isHTML) return {status:"unknown", detail:NEED_HTML};
+  return null;
+}
+const s = (status, detail) => ({status, detail});
+
+const CHECKS = [
+  // ---- Mobile ----
+  {id:"m-answer", area:"mobile", label:"Easy to use on a phone (your answer)", w:3, content:false,
+   test:c => c.inp.mobile === "yes" ? s("pass","You said your site works well on phones.") : s("fail", c.inp.mobile === "no" ? "You said your site is hard to use on a phone." : "You're not sure how your site works on a phone."),
+   issue:c => ({title:"Visitors on phones may struggle to use your site", sev:c.inp.mobile === "no" ? "High" : "Medium", path:0,
+     what:c.inp.mobile === "no" ? "You told us your website is hard to use on a phone." : "You aren't sure whether your website works well on a phone.",
+     why:"Most people look up local businesses on their phones. If text is tiny or buttons are hard to tap, they leave and call someone else.",
+     how:[{t:"Open your site on your own phone and note anything hard to read or tap (menu, buttons, phone number, photos).", who:"owner"},
+          {t:"Bring that list to your next squad session so DSS can check it with you and fix what the website editor allows.", who:"dss"},
+          {t:"If menus or page layouts break on phones, get a quote to rebuild the mobile layout.", who:"vendor", why:"Rebuilding a layout means editing the site's template or code and testing every page on several screen sizes."}]})},
+  {id:"m-viewport", area:"mobile", label:"Page is set up to fit phone screens", w:3, content:false,
+   test:c => needs(c,"html") || (/width\s*=\s*device-width/i.test(c.p.viewport||"") ? s("pass","Phone-sizing setting (viewport tag) found.") : s("fail","No phone-sizing setting (viewport tag) found in the page source.")),
+   issue:c => ({title:"Your site may not resize for phone screens", sev:"High", path:1,
+     what:"The page is missing the setting that tells phones to fit the page to the screen.",
+     why:"Without it, phones show a shrunken desktop page, so visitors have to pinch and zoom to read anything.",
+     how:[{t:"If you use a website builder (e.g. Wix, Squarespace, WordPress.com), check that you're on a current, mobile-friendly theme.", who:"owner"},
+          {t:"Ask DSS to help you choose and switch to a mobile-friendly theme.", who:"dss"},
+          {t:"If the site is custom-built, have a developer add the setting and make the layout responsive.", who:"vendor", why:"This is a code change to the site template and has to be tested on every page."}]})},
+  {id:"m-tel", area:"mobile", label:"Phone number can be tapped to call", w:2, content:false,
+   test:c => needs(c,"html") || (!c.sig.phone ? s("unknown","No phone number found (see Navigation & contact).") : c.p.tel ? s("pass","Your phone number is a tap-to-call link.") : s("fail","Your phone number is plain text, so it can't be tapped to call.")),
+   issue:c => ({title:"Customers can't tap your phone number to call", sev:c.inp.goal === "call" ? "High" : "Medium", path:0,
+     what:"Your phone number appears as plain text, not a tap-to-call link.",
+     why:"On a phone, people expect to tap a number to call. If they have to copy it, some won't bother.",
+     how:[{t:"In your website editor, select the phone number, choose Link → Phone, and enter the number.", who:"owner"},
+          {t:"If your editor doesn't offer phone links, DSS can add it with you in a few minutes.", who:"dss"}]})},
+  {id:"m-oldtech", area:"mobile", label:"Built with current page technology", w:2, content:false,
+   test:c => needs(c,"html") || (c.p.oldTech ? s("fail","Old layout methods found (fixed-width tables or old font tags).") : s("pass","No outdated layout methods found.")),
+   issue:c => ({title:"Your site is built with outdated page technology", sev:"High", path:1,
+     what:"The page uses old layout methods (fixed-width tables and old font tags) from before smartphones.",
+     why:"These layouts can't adapt to phone screens and are hard to update, so the site slowly falls behind.",
+     how:[{t:"List the pages you have and what each one needs to say. This becomes the plan for a refreshed site.", who:"owner"},
+          {t:"Ask DSS whether moving to a modern website builder makes sense for you.", who:"dss"},
+          {t:"Moving the site to a new template or platform is usually vendor work.", who:"vendor", why:"A platform move means rebuilding pages, moving content and keeping web addresses working."}]})},
+  // ---- Content ----
+  {id:"c-headline", area:"content", label:"Top headline says what you do", w:3, content:true,
+   test:c => { const n = needs(c); if(n) return n; const h = c.p.headline;
+     if(!h) return s("fail","No clear headline found at the top of the page.");
+     const generic = /^(welcome|home|untitled|index)\b/i.test(h);
+     const hl = h.toLowerCase();
+     const says = (TYPES[c.inp.type]?.kw||[]).some(k => hl.includes(k)) || c.sig.serviceWords.some(w => hl.includes(w));
+     return (!generic && says && words(h) <= 16) ? s("pass",`Headline: "${h}"`) : s("fail",`Headline: "${h}". It doesn't tell a new visitor what you offer.`); },
+   issue:c => ({title:"Your main headline doesn't say what you do", sev:"High", path:0, renew:"headline",
+     what:c.p.headline ? `Your top headline is "${c.p.headline}". A first-time visitor can't tell what you offer or where.` : "There's no clear headline at the top of your homepage.",
+     why:"Visitors decide in a few seconds whether they're in the right place. A clear headline keeps them on the page.",
+     how:[{t:"Replace your headline with one from your plan. It's written from your business details.", who:"owner"},
+          {t:"Add a one-line subheading saying where you are and who you serve.", who:"owner"},
+          {t:"Review the new wording with DSS before you publish it.", who:"dss"}]})},
+  {id:"c-whatwhere", area:"content", label:"Names what you offer", w:2, content:true,
+   test:c => needs(c) || (c.sig.typeKw ? s("pass","Your homepage names what you offer.") : s("fail","Your homepage doesn't clearly name what you offer.")),
+   issue:c => ({title:"Your homepage doesn't clearly say what you offer", sev:"Medium", path:1, renew:"copy",
+     what:`Your homepage doesn't clearly name your main offer (${c.inp.service}).`,
+     why:"Visitors and search engines look for what you do first. If it isn't named plainly, you're harder to choose.",
+     how:[{t:"Add a short paragraph near the top that names your main offer. Your plan has one ready.", who:"owner"}]})},
+  {id:"c-read", area:"content", label:"Easy to read (no walls of text)", w:2, content:true,
+   test:c => { const n = needs(c); if(n) return n; if(!c.p.paragraphs.length) return s("unknown","Not enough text to judge.");
+     return (c.sig.avgPara > 60 || c.sig.longest > 90) ? s("fail",`Your longest paragraph is ${c.sig.longest} words.`) : s("pass","Paragraphs are a comfortable length."); },
+   issue:c => ({title:"Long blocks of text are hard to read", sev:"Medium", path:1, renew:"copy",
+     what:`Your homepage has a paragraph of ${c.sig.longest} words.`,
+     why:"People skim websites, especially on phones. Long paragraphs get skipped, and the important parts get missed.",
+     how:[{t:"Break long paragraphs into 2–3 short sentences each, with a short heading above each section.", who:"owner"},
+          {t:"Turn lists of services into bullet points.", who:"owner"},
+          {t:"Ask DSS to help reorganize the page into clear sections.", who:"dss"}]})},
+  {id:"c-fresh", area:"content", label:"Information looks up to date", w:2, content:false,
+   test:c => { const stale = c.sig.crYear && c.sig.crYear < YEAR - 1; const old = ["old","veryold"].includes(c.inp.updated);
+     if(stale || old) return s("fail", [stale ? `Copyright year shows ${c.sig.crYear}.` : "", old ? `You said the site was last updated ${UPDATED[c.inp.updated].toLowerCase()}.` : ""].filter(Boolean).join(" "));
+     if(c.inp.updated === "unsure") return s("fail","You're not sure when the site was last updated.");
+     return s("pass","Recently updated."); },
+   issue:c => ({title:"Your website looks out of date", sev:c.inp.updated === "veryold" ? "High" : "Medium", path:1,
+     what:[c.sig.crYear && c.sig.crYear < YEAR - 1 ? `The footer says © ${c.sig.crYear}.` : "", c.inp.updated !== "recent" ? `Last update: ${UPDATED[c.inp.updated].toLowerCase()}.` : ""].filter(Boolean).join(" "),
+     why:"Old dates and stale details make visitors wonder if you're still open, or if your hours and prices are still right.",
+     how:[{t:`Update the copyright year to ${YEAR} and check that hours, prices and services are current.`, who:"owner"},
+          {t:"Set a monthly 10-minute reminder to check your homepage, hours and contact details.", who:"owner"},
+          {t:"Ask DSS for a simple maintenance checklist you can follow.", who:"dss"}]})},
+  {id:"c-thin", area:"content", label:"Enough information on the homepage", w:1, content:true,
+   test:c => needs(c) || (c.sig.wc < 80 ? s("fail",`Only about ${c.sig.wc} words found.`) : s("pass",`About ${c.sig.wc} words of content.`)),
+   issue:c => ({title:"Your homepage has very little information", sev:"Medium", path:1, renew:"copy",
+     what:`Your homepage has only about ${c.sig.wc} words.`,
+     why:"With little to read, visitors can't tell what makes you different, and search engines have little to show.",
+     how:[{t:"Add a short 'What we offer' section and 2–3 reasons to choose you. Your plan has a draft.", who:"owner"}]})},
+  // ---- Navigation & contact ----
+  {id:"n-answer", area:"nav", label:"Contact details easy to find (your answer)", w:3, content:false,
+   test:c => c.inp.findable === "yes" ? s("pass","You said customers can find your details quickly.") : s("fail", c.inp.findable === "no" ? "You said customers can't find your details quickly." : "You're not sure customers can find your details quickly."),
+   issue:c => ({title:"Customers may not find how to reach you", sev:c.inp.findable === "no" ? "High" : "Medium", path:0, renew:"contact",
+     what:c.inp.findable === "no" ? "You told us customers can't find your phone, address or hours within a click or two." : "You aren't sure customers can find your phone, address or hours quickly.",
+     why:"If people can't see how to reach you, they give up. This is often where local businesses lose the most customers.",
+     how:[{t:"Put your phone number, address and hours in the top area of your homepage and in the footer of every page.", who:"owner"},
+          {t:"Ask DSS to add a 'Contact' item to your main menu if your editor makes it tricky.", who:"dss"}]})},
+  {id:"n-phone", area:"nav", label:"Phone number shown", w:2, content:true,
+   test:c => needs(c) || (c.sig.phone ? s("pass","Phone number found.") : s("fail","No phone number found on the page.")),
+   issue:c => ({title:"Your phone number isn't on your homepage", sev:c.inp.goal === "call" ? "High" : "Medium", path:0, renew:"contact",
+     what:"We couldn't find a phone number on your homepage.",
+     why:"Many local customers prefer to call. If the number isn't there, they call a competitor.",
+     how:[{t:"Add your phone number near the top of the homepage and in the footer.", who:"owner"}]})},
+  {id:"n-route", area:"nav", label:"A way to send a message or inquiry", w:2, content:true,
+   test:c => needs(c) || ((c.sig.email || c.p.forms > 0 || c.sig.contactLinkOk) ? s("pass","Email, contact form or contact page found.") : s("fail","No email, contact form or working contact page found.")),
+   issue:c => ({title:"There's no easy way to send you a message", sev:["inquiry","book","message"].includes(c.inp.goal) ? "High" : "Medium", path:0, renew:"contact",
+     what:"We couldn't find an email address, contact form or working contact page.",
+     why:"Some customers would rather write than call, especially after hours. Without a way to message you, those inquiries are lost.",
+     how:[{t:"Add your business email address to the homepage and footer.", who:"owner"},
+          {t:"Ask DSS to set up a simple contact form in your website editor.", who:"dss"},
+          ...(c.inp.goal === "book" ? [{t:"If you want online booking linked to your calendar, a booking system may need to be set up.", who:"vendor", why:"Connecting a booking or calendar system is an integration that needs setup and testing."}] : [])]})},
+  // Sprint 2, NEW-A: only runs when the owner's main goal is to be messaged. If we can't see the page source, it is still
+  // suggested (worded as "make sure"), so the owner's choice always shapes at least one improvement (NEW-A AC2).
+  {id:"n-wa", area:"nav", label:"Customers can message you (WhatsApp or text)", w:3, content:false,
+   applies:inp => inp.goal === "message", suggestWhenUnknown:true,
+   test:c => needs(c,"html") || (c.sig.msgLink ? s("pass","Found a link that opens WhatsApp or a text message.") : s("fail","No link that opens WhatsApp or a text message.")),
+   issue:c => {
+     const seen = c.p.hasContent && c.p.isHTML, link = waLinkFor(c.sig.phoneStr);
+     return {title: seen ? "Customers can't message you on WhatsApp or by text" : "Make sure customers can message you on WhatsApp or by text",
+       sev: seen ? "High" : "Medium", path:0, renew:"contact",
+       what: seen ? "You want customers to message you, but your homepage has no link that opens WhatsApp or a text message."
+                  : "You want customers to message you. Without your page source we couldn't check for a WhatsApp or text link, so check it yourself.",
+       why:"Many customers would rather send a quick message than call, especially after hours. A button that opens WhatsApp on their phone makes that one tap.",
+       how:[{t:"Set up WhatsApp Business (free) on your business phone, if you haven't already.", who:"owner"},
+            {t: link ? `Add a "Message us on WhatsApp" button near the top of your homepage that links to ${link}.` : `Add a "Message us on WhatsApp" button near the top of your homepage that links to https://wa.me/ followed by your number with the country code (1 for Canada).`, who:"owner"},
+            {t:"If your editor makes buttons or links tricky, DSS can add it with you and test it on a phone.", who:"dss"}]};
+   }},
+  // Sprint 3, NEW-D1: only runs when the owner wants customers to book or order online. Not found (AC1): the results say so in
+  // plain language, as a High-priority improvement. Found (AC2): the check passes, the finding says the homepage "appears to offer" it,
+  // and the suggestion is about making it easier to see. No homepage (AC3): suggested as "make sure", like NEW-A, so the owner checks it.
+  {id:"n-book", area:"nav", label:"A way to book or order online", w:3, content:true,
+   applies:inp => !!ONLINE[inp.goal], suggestWhenUnknown:true, suggestWhenPass:true,
+   test:c => { const O = ONLINE[c.inp.goal], n = needs(c); if(n) return n;
+     if(c.sig.online.found) return s("pass", c.sig.online.label ? `Your homepage appears to offer online ${O.noun}: “${c.sig.online.label}”.` : `Your homepage appears to offer online ${O.noun} (${c.sig.online.where}).`);
+     return s("fail", `${O.none} ${c.p.isHTML ? "on your homepage" : "in the text you pasted"}.`); },
+   issue:c => {
+     const O = ONLINE[c.inp.goal], book = c.inp.goal === "book", found = c.sig.online.found, seen = c.p.hasContent;
+     const where = c.p.isHTML ? "on your homepage" : "in the homepage text you pasted";
+     const builder = book ? "a built-in booking feature" : "a built-in online store or ordering feature";
+     const lbl = c.sig.online.label, btn = lbl ? `the “${lbl}” button` : `your ${O.noun} button`;
+     const hint = c.sig.online.hint, hl = hint ? `“${hint.label}”` : "";
+     const why = !hint ? "" : {
+       phone:` Your ${hl} button only calls your phone number, so customers still have to call.`,
+       text:` Your ${hl} button only starts a text message, so customers still can't ${O.verb} online.`,
+       email:` Your ${hl} button only opens an email, so customers still can't ${O.verb} online.`,
+       contact:` Your ${hl} button goes to your contact page, not to online booking.`,
+       form:` Your ${hl} link goes to an order form, which isn't the same as ordering online.`,
+       unclear: c.p.isHTML ? ` Your ${hl} button may lead to an order form, phone or email instead of a cart or payment, and we can't see where it goes.`
+                           : ` We can't tell from the text alone where your ${hl} button leads. If it opens a cart or online payment, you may already have this. Paste the page source to check.`}[hint.why];
+     if(found) return {title: book ? "Make your booking button easier to find" : "Make your ordering button easier to find", sev:"Low", path:2,
+       what:`Your homepage appears to offer online ${O.noun} (${lbl ? `“${lbl}”` : c.sig.online.where}). We can't see what happens after the click, so check that it works, and make sure every visitor can find it.`,
+       why:`Visitors who are ready to ${O.verb} should see the button straight away, on a phone as well as a computer. If they have to look for it, some give up.`,
+       how:[{t:`Put ${btn} near the top of your homepage, above the first paragraph, so visitors see it without scrolling.`, who:"owner"},
+            {t:"Add the same link to your main menu so it's on every page.", who:"owner"},
+            {t:"DSS can check with you on a phone that the button is easy to see and tap.", who:"dss"}]};
+     if(!seen) return {title: book ? "Make sure customers can book online" : "Make sure customers can order online", sev:"Medium", path:0,
+       what:`You want customers to ${book ? "book appointments" : "order"} online. Without your homepage we couldn't check for ${O.thing}, so check it yourself.`,
+       why:`People who are ready to ${O.verb} often want to do it right away, even after hours. If there's no way to ${O.verb} online, they have to call, and some go elsewhere.`,
+       how:[{t: book ? "Open your homepage on your phone and look for a button that lets customers book online (for example “Book now”)."
+                     : "Open your homepage on your phone and check whether customers can add items to a cart and pay online.", who:"owner"},
+            {t:`If there isn't one, check whether your website builder has ${builder} you can switch on.`, who:"owner"},
+            {t:`DSS can help you add ${/^[aeiou]/i.test(O.button) ? "an" : "a"} “${O.button}” button and test it on a phone.`, who:"dss"}]};
+     return {title: book ? "Customers can't book online from your homepage" : "Customers can't order online from your homepage", sev:"High", path:0,
+       what:`You want customers to ${book ? "book appointments" : "order"} online, but we didn't find ${O.thing} ${where}.${why}`,
+       why:`People who are ready to ${O.verb} often want to do it right away, even after hours. Without a way to ${O.verb} online, they have to call during opening hours, and some go elsewhere.`,
+       how:[{t:`Check whether your website builder has ${builder} you can switch on.`, who:"owner"},
+            {t:`Bring this to your next squad session. DSS can help you compare options and add ${/^[aeiou]/i.test(O.button) ? "an" : "a"} “${O.button}” button near the top of your homepage.`, who:"dss"},
+            // v3.2: setting up the tool itself is usually vendor work (NEW-D2: label the step "May need a vendor" and name the type of tool)
+            {t: book ? "If your website builder has no booking feature, you will need an online booking system set up on your website."
+                     : "If your website builder has no online store feature, you will need an online store or ordering system, with a cart and online payment, set up on your website.", who:"vendor",
+             why: book ? "Connecting a booking or calendar system to your website is an integration that needs setup and testing."
+                       : "Taking orders and payments online means setting up products, payment and order alerts, and testing them."}]};
+   }},
+  {id:"n-visit", area:"nav", label:"Address and hours shown", w:2, content:true,
+   test:c => needs(c) || ((c.sig.address && c.sig.hours) ? s("pass","Address and hours found.") : s("fail", !c.sig.address && !c.sig.hours ? "No address or opening hours found." : !c.sig.address ? "No street address found." : "No opening hours found.")),
+   issue:c => ({title:"Your address or opening hours are missing", sev:c.inp.goal === "visit" ? "High" : "Medium", path:c.inp.goal === "visit" ? 0 : 1, renew:"contact",
+     what:!c.sig.address && !c.sig.hours ? "We couldn't find your street address or opening hours." : !c.sig.address ? "We couldn't find your street address." : "We couldn't find your opening hours.",
+     why:"People check the address and hours before they come in. If they're missing, they may assume you're closed.",
+     how:[{t:"Add your street address and opening hours to the homepage and footer.", who:"owner"},
+          {t:"Ask DSS to help add a map of your location.", who:"dss"}]})},
+  {id:"n-cta", area:"nav", label:"Clear button for your main goal", w:3, content:true,
+   test:c => needs(c) || (c.sig.cta ? s("pass",`Found wording that invites visitors to "${GOALS[c.inp.goal].label.toLowerCase()}".`) : s("fail",`Nothing invites visitors to "${GOALS[c.inp.goal].label.toLowerCase()}".`)),
+   issue:c => ({title:"Visitors aren't asked to take your main action", sev:"High", path:0, renew:"cta",
+     what:`You want visitors to "${GOALS[c.inp.goal].label.toLowerCase()}", but nothing on your homepage asks them to.`,
+     why:"A clear button tells visitors what to do next. Without one, interested people leave without acting.",
+     how:[{t:`Add a button near the top that says "${fill(GOALS[c.inp.goal].cta,{name:c.inp.name})}" (wording in your plan).`, who:"owner"},
+          {t:"If your editor makes buttons hard to place, DSS can add it with you.", who:"dss"}]})},
+  {id:"n-loop", area:"nav", label:"Menu links go to their own pages", w:2, content:false,
+   test:c => needs(c,"html") || (c.sig.loopedLinks.length ? s("fail",`${c.sig.loopedLinks.length} menu link${c.sig.loopedLinks.length>1?"s":""} (${c.sig.loopedLinks.slice(0,3).map(l=>`"${l.text.trim()}"`).join(", ")}) just reload${c.sig.loopedLinks.length>1?"":"s"} the homepage.`) : s("pass","Menu links each go to their own page.")),
+   issue:c => ({title:"Some menu links only reload the homepage", sev:"High", path:1,
+     what:`${c.sig.loopedLinks.slice(0,3).map(l=>`"${l.text.trim()}"`).join(", ")} in your menu point${c.sig.loopedLinks.length>1?"":"s"} back to the homepage instead of to a page of ${c.sig.loopedLinks.length>1?"their":"its"} own.`,
+     why:"Visitors click a menu item expecting to go somewhere. When the page just reloads, they assume the link is broken, and search engines can't find the content either.",
+     how:[{t:"In your website editor, point each menu item to its real page, or make dropdown headings open the first item in the dropdown.", who:"owner"},
+          {t:"If your menu is built as dropdowns, DSS can help set the parent items so they lead somewhere useful.", who:"dss"}]})},
+  {id:"n-menu", area:"nav", label:"'Contact' in the menu works", w:2, content:false,
+   test:c => needs(c,"html") || (c.sig.contactLinkOk ? s("pass","A working Contact link was found.") : c.sig.contactLinkBroken ? s("fail","Your Contact link goes nowhere (it points to '#').") : s("fail","No Contact link found in the menu.")),
+   issue:c => ({title:c.sig.contactLinkBroken ? "Your 'Contact' link is broken" : "There's no 'Contact' link in your menu", sev:c.sig.contactLinkBroken ? "High" : "Medium", path:0, renew:"contact",
+     what:c.sig.contactLinkBroken ? "Your menu has a Contact link, but it doesn't go anywhere." : "Your menu doesn't include a Contact link.",
+     why:"Visitors look for 'Contact' in the menu. A missing or broken link looks like the business isn't reachable.",
+     how:[{t:"Point the Contact menu item to a page or section with your phone, email, address and hours.", who:"owner"},
+          {t:"If you don't have a contact page yet, DSS can help you create one.", who:"dss"}]})},
+  // ---- Search ----
+  {id:"s-title", area:"search", label:"Page title names your business or town", w:3, content:false,
+   test:c => { const n = needs(c,"html"); if(n) return n; const t = c.p.title||"";
+     if(!t || /^(home|untitled|index|welcome)$/i.test(t)) return s("fail", t ? `Page title is just "${t}".` : "No page title found.");
+     const named = t.toLowerCase().includes(c.inp.name.toLowerCase()) || (c.inp.city && t.toLowerCase().includes(c.inp.city.toLowerCase()));
+     if(!named) return s("fail",`Page title "${t}" doesn't include your business name or town.`);
+     if(t.length > 65) return s("fail",`Page title is ${t.length} characters. Search results cut it off after about 60.`);
+     return s("pass",`Page title: "${t}"`); },
+   issue:c => { const t = c.p.title||""; const generic = !t || /^(home|untitled|index|welcome)$/i.test(t);
+     return {title:"Your page title doesn't help people find you", sev:generic ? "High" : "Low", path:1, renew:"seo",
+     what:generic ? (t ? `Your page title is just "${t}".` : "Your page has no title.") : `Your page title "${t}" could be clearer.`,
+     why:"The page title is the blue link people see in Google. A clear one with your service and town gets more clicks.",
+     how:[{t:"Paste the suggested title from your plan into your editor's SEO or page settings.", who:"owner"}]}; }},
+  {id:"s-meta", area:"search", label:"Search description written", w:2, content:false,
+   test:c => { const n = needs(c,"html"); if(n) return n; const d = c.p.metaDesc||"";
+     if(!d) return s("fail","No search description (meta description) found.");
+     if(d.length < 50 || d.length > 160) return s("fail",`Search description is ${d.length} characters (aim for 50–160).`);
+     return s("pass","Search description found."); },
+   issue:c => ({title:"Your search description is missing or weak", sev:"Medium", path:1, renew:"seo",
+     what:c.p.metaDesc ? "Your search description is too short or too long." : "Your page has no search description, so search engines pick random text instead.",
+     why:"This is the short text under your link in Google. A good one tells people why to click.",
+     how:[{t:"Paste the suggested description from your plan into your editor's SEO settings.", who:"owner"}]})},
+  {id:"s-h1", area:"search", label:"One main heading on the page", w:2, content:false,
+   test:c => needs(c,"html") || (c.p.h1.length === 1 ? s("pass","One main heading (H1) found.") : c.p.h1.length === 0 ? s("fail","No main heading (H1) found.") : s("fail",`${c.p.h1.length} main headings (H1) found. There should be one.`)),
+   issue:c => ({title:c.p.h1.length ? "Your page has more than one main heading" : "Your page has no main heading", sev:c.p.h1.length ? "Low" : "Medium", path:1, renew:"headline",
+     what:c.p.h1.length ? `Your page has ${c.p.h1.length} main headings (${c.p.h1.map(h=>`"${h}"`).join(", ")}).` : "Your page has no main heading.",
+     why:"Search engines use the main heading to understand what the page is about. One clear heading works best.",
+     how:[{t:"Keep one main heading (use the new headline from your plan) and make the others smaller subheadings.", who:"owner"}]})},
+  {id:"s-alt", area:"search", label:"Images have descriptions (alt text)", w:1, content:false,
+   test:c => { const n = needs(c,"html"); if(n) return n; if(!c.p.imgs) return s("unknown","No images found.");
+     return c.p.imgsNoAlt / c.p.imgs > 0.3 ? s("fail",`${c.p.imgsNoAlt} of ${c.p.imgs} images have no description.`) : s("pass","Images have descriptions."); },
+   issue:c => ({title:"Images are missing descriptions", sev:"Medium", path:2, renew:"seo",
+     what:`${c.p.imgsNoAlt} of ${c.p.imgs} images have no description (alt text).`,
+     why:"Descriptions help people using screen readers and help your photos show up in image search.",
+     how:[{t:"In your editor, add a short description to each image (e.g. what's in the photo plus your town).", who:"owner"}]})},
+  {id:"s-local", area:"search", label:"Mentions your town", w:2, content:true,
+   test:c => needs(c) || (c.sig.cityMention ? s("pass",`${c.inp.city} is mentioned.`) : s("fail",`${c.inp.city} isn't mentioned anywhere on the page.`)),
+   issue:c => ({title:`Your homepage doesn't mention ${c.inp.city}`, sev:c.inp.discovery === "search" ? "High" : "Medium", path:1, renew:"copy",
+     what:`${c.inp.city} doesn't appear anywhere on your homepage.`,
+     why:`People search for things like "${c.inp.service} ${c.inp.city}". If your town isn't on the page, you're less likely to show up.`,
+     how:[{t:`Mention ${c.inp.city} in your headline or first paragraph. Your plan does this for you.`, who:"owner"}]})},
+  {id:"s-schema", area:"search", label:"Business details marked up for Google", w:1, content:false,
+   test:c => needs(c,"html") || (c.p.schema ? s("pass","Structured business details found.") : s("fail","No structured business details (schema) found.")),
+   issue:c => ({title:"Google can't read your business details automatically", sev:"Low", path:2,
+     what:"Your page doesn't include structured business details (schema markup) for search engines.",
+     why:"This helps Google show your hours, address and reviews directly in results. Useful, but less urgent than other fixes.",
+     how:[{t:"Make sure your free Google Business Profile has your correct hours, address and phone number.", who:"owner"},
+          {t:"Adding structured data to the site itself is usually vendor work.", who:"vendor", why:"Schema markup is code added to the page template and needs testing with Google's tools."}]})}
+];
+
+/* ---------- Assessment + ranking ---------- */
+function assess(inp){
+  const p = parseContent(inp.content);
+  const sig = signals(inp, p);
+  const ctx = {inp, p, sig};
+  const results = CHECKS.filter(ch => !ch.applies || ch.applies(inp)).map(ch => ({ch, ...ch.test(ctx)}));
+  const areas = AREAS.map(a => {
+    const rs = results.filter(r => r.ch.area === a.id);
+    const known = rs.filter(r => r.status !== "unknown");
+    const tot = known.reduce((x,r)=>x+r.ch.w,0), ok = known.filter(r=>r.status==="pass").reduce((x,r)=>x+r.ch.w,0);
+    const score = tot ? Math.round(100*ok/tot) : null;
+    const status = score === null ? "unk" : score >= 80 ? "good" : score >= 50 ? "attn" : "urgent";
+    return {...a, results:rs, score, status, unknown:rs.length - known.length};
+  });
+  const boost = {search:"search", social:"mobile", word:"nav", walk:"nav"}[inp.discovery];
+  const issues = results.filter(r => r.status === "fail" || (r.status === "unknown" && r.ch.suggestWhenUnknown) || (r.status === "pass" && r.ch.suggestWhenPass)).map(r => {
+    const iss = r.ch.issue(ctx);
+    const path = iss.path;
+    // severity x customer-path weight, plus small bonuses for the owner's stated goal and how customers find them
+    const goalBonus = r.ch.id === "n-cta" ? 1 : (GOAL_CHECKS[inp.goal] || []).includes(r.ch.id) ? 1.5 : 0;
+    const score = SEV_W[iss.sev] * PATH[path].w + goalBonus + (r.ch.area === boost ? 1 : 0);
+    return {id:r.ch.id, area:r.ch.area, ...iss, path, score, order:CHECKS.indexOf(r.ch)};
+  }).sort((a,b) => SEV_W[b.sev] - SEV_W[a.sev] || b.score - a.score || a.order - b.order); // High, then Medium, then Low; within a level, customer-path score
+  if(!issues.length){
+    issues.push({id:"keep-fresh", area:"content", title:"Keep your homepage fresh", sev:"Low", path:3, renew:"headline", score:0,
+      what:"We didn't find any problems in the areas we checked. Nice work.",
+      why:"Sites drift out of date quietly. A small refresh keeps your first impression strong.",
+      how:[{t:"Try the refreshed headline and wording in your plan.", who:"owner"},
+           {t:"Set a monthly reminder to check hours, prices and contact details.", who:"owner"}]});
+  }
+  return {inp, p, sig, ctx, areas, issues, recommendedId:issues[0].id};
+}
+
+/* ---------- State + rendering ---------- */
+const state = {step:0, A:null, selectedId:null, started:null, finishedAt:null, read:null, shot:null};
+function issueById(id){ return state.A && state.A.issues.find(i => i.id === id); }
+function selected(){ return issueById(state.selectedId) || state.A.issues[0]; }
+
+function go(n){
+  if(n > 0 && !state.A) return;
+  state.step = n;
+  $$("section.view").forEach((v,i) => v.hidden = i !== n);
+  $$("#stepper button").forEach((b,i) => { b.toggleAttribute("disabled", i > 0 && !state.A); if(i === n) b.setAttribute("aria-current","step"); else b.removeAttribute("aria-current"); });
+  if(n === 1) renderAssess();
+  if(n === 2) renderIssues();
+  if(n === 3){ if(!state.finishedAt) state.finishedAt = Date.now(); renderHandoff(); }
+  if(n === 4) renderPlan();
+  window.scrollTo(0, 0);
+  const h = $(`#h${n}`); if(h) h.focus({preventScroll:true});
+}
+
+function radios(id, name, opts){
+  $(id).innerHTML = Object.entries(opts).map(([v,l]) => `<label><input type="radio" name="${name}" value="${esc(v)}"> ${esc(l)}</label>`).join("");
+}
+function initForm(){
+  $("#type").innerHTML = `<option value="">Choose one…</option>` + Object.entries(TYPES).map(([k,t]) => `<option value="${k}">${esc(t.label)}</option>`).join("");
+  radios("#q-goal","goal",Object.fromEntries(Object.entries(GOALS).map(([k,g])=>[k,g.label])));
+  radios("#q-discovery","discovery",DISCOVERY);
+  radios("#q-updated","updated",UPDATED);
+  radios("#q-mobile","mobile",YNU);
+  radios("#q-findable","findable",YNU);
+  $("#samples").innerHTML = SAMPLES.map(s => `<button type="button" class="btn ghost small" data-sample="${s.key}">${esc(s.label)}</button>`).join("");
+  $("#content").addEventListener("input", contentKind);
+  $("#form").addEventListener("input", () => { if(!state.started) state.started = Date.now(); }, {once:true});
+}
+function contentKind(){
+  const v = $("#content").value.trim();
+  $("#content-kind").textContent = !v ? "" : parseContent(v).isHTML ? `Page source detected (${words(v)} words). We'll run the full check.` : `Page text detected (${words(v)} words). Paste the page source instead to also check the search and mobile settings.`;
+}
+function loadSample(key){
+  const s = SAMPLES.find(x => x.key === key); if(!s) return;
+  const d = s.data;
+  ["name","url","type","city","service","content"].forEach(k => $("#"+k).value = d[k]);
+  ["goal","discovery","updated","mobile","findable"].forEach(k => { const r = $(`input[name="${k}"][value="${d[k]}"]`); if(r) r.checked = true; });
+  $$(".err").forEach(e => e.textContent = "");
+  $("#shot").value = ""; state.shot = null;
+  contentKind();
+  if(!state.started) state.started = Date.now();
+  toast(`Loaded ${d.name}. Review the answers, then press "Assess my website".`);
+  $("#form .actions .btn").scrollIntoView({behavior:"smooth", block:"center"});
+}
+function normalizeUrl(u){
+  u = u.trim(); if(!u) return null;
+  if(!/^https?:\/\//i.test(u)) u = "https://" + u;
+  try{ const x = new URL(u); if(!/\.[a-z]{2,}$/i.test(x.hostname)) return null; return {display:x.hostname.replace(/^www\./,"") + (x.pathname !== "/" ? x.pathname : ""), full:x.href}; }catch(e){ return null; }
+}
+function readForm(){
+  const v = id => $("#"+id).value.trim();
+  const r = n => ($(`input[name="${n}"]:checked`)||{}).value || "";
+  const inp = {name:v("name"), urlRaw:v("url"), type:v("type"), city:v("city"), service:v("service"),
+    goal:r("goal"), discovery:r("discovery"), updated:r("updated"), mobile:r("mobile"), findable:r("findable"), content:$("#content").value};
+  const nu = normalizeUrl(inp.urlRaw); inp.url = nu ? nu.display : null; inp.fullUrl = nu ? nu.full : null;
+  const errs = {};
+  if(!inp.name) errs.name = "Please enter your business name.";
+  if(!inp.urlRaw) errs.url = "Please enter your website address."; else if(!inp.url) errs.url = "That doesn't look like a website address (e.g. www.yourbusiness.ca).";
+  if(!inp.type) errs.type = "Please choose a type of business.";
+  if(!inp.city) errs.city = "Please enter your town or city.";
+  if(!inp.service) errs.service = "Please describe what you mainly offer.";
+  ["goal","discovery","updated","mobile","findable"].forEach(k => { if(!inp[k]) errs[k] = "Please choose an answer."; });
+  $$(".err").forEach(e => e.textContent = "");
+  Object.entries(errs).forEach(([k,m]) => { const e = $("#e-"+k); if(e) e.textContent = m; });
+  return {inp, errs};
+}
+async function tryReadSite(fullUrl){
+  // Browsers block reading most other websites (cross-origin rules). We try with a short timeout and fall back to the owner's details.
+  if(!("fetch" in window) || !("AbortController" in window)) return {ok:false, reason:"not supported in this browser"};
+  const ctrl = new AbortController(); const timer = setTimeout(() => ctrl.abort(), 5000);
+  try{
+    const res = await fetch(fullUrl, {signal:ctrl.signal, mode:"cors", credentials:"omit", redirect:"follow"});
+    if(!res.ok) return {ok:false, reason:`the site answered with error ${res.status}`};
+    const html = await res.text();
+    if(!/<\s*(html|head|body|title|h1|p)\b/i.test(html)) return {ok:false, reason:"the page didn't look like a web page"};
+    return {ok:true, html};
+  }catch(err){ return {ok:false, reason: err && err.name === "AbortError" ? "it took too long to answer" : "the website doesn't allow a browser to read it"}; }
+  finally{ clearTimeout(timer); }
+}
+let submitting = false;
+async function onSubmit(e){
+  e.preventDefault();
+  if(submitting) return;
+  const {inp, errs} = readForm();
+  const keys = Object.keys(errs);
+  if(keys.length){
+    const first = keys[0];
+    const el = $("#"+first) || $(`input[name="${first}"]`);
+    if(el){ el.focus(); el.scrollIntoView({behavior:"smooth", block:"center"}); }
+    toast(`Please complete ${keys.length} missing answer${keys.length>1?"s":""}.`);
+    return;
+  }
+  const btn = $("#submit");
+  if(inp.content.trim()){
+    state.read = {mode: parseContent(inp.content).isHTML ? "source" : "text"};
+  } else {
+    submitting = true; btn.disabled = true; btn.textContent = "Reading your website…";
+    const r = await tryReadSite(inp.fullUrl);
+    submitting = false; btn.disabled = false; btn.textContent = "Assess my website →";
+    if(r.ok){ inp.content = r.html; state.read = {mode:"auto"}; }
+    else { state.read = {mode:"none", reason:r.reason}; }
+  }
+  const prevSel = state.selectedId;
+  state.A = assess(inp);
+  state.selectedId = issueById(prevSel) ? prevSel : state.A.recommendedId;
+  if(prevSel && state.selectedId !== prevSel) state.selectedId = state.A.recommendedId;
+  state.finishedAt = null;
+  if(!state.started) state.started = Date.now();
+  go(1);
+}
+
+function statusPill(st){
+  return {good:'<span class="pill s-good">Good</span>', attn:'<span class="pill s-attn">Needs attention</span>', urgent:'<span class="pill s-urgent">Urgent</span>', unk:'<span class="pill s-unk">Not enough info</span>'}[st];
+}
+const A_NOTE = a => a.results.some(r => r.status === "unknown" && r.detail === NEED_HTML) ? "paste the page source to run them" : a.results.some(r => r.status === "unknown" && r.detail === NEED_TEXT) ? "paste your homepage to run them" : "not applicable";
+function areaSummary(a){
+  if(a.status === "unk") return `We couldn't check this area. ${a.results[0]?.detail || ""}`;
+  const fails = a.results.filter(r => r.status === "fail");
+  const unk = a.unknown ? ` (${a.unknown} check${a.unknown>1?"s":""} skipped: ${A_NOTE(a)})` : "";
+  if(!fails.length) return `Looks solid. No problems found in what we checked${unk}.`;
+  const top = fails.sort((x,y) => y.ch.w - x.ch.w)[0];
+  return `Needs attention: ${top.ch.label.toLowerCase().replace(/ \(your answer\)/,"")}${fails.length > 1 ? `, and ${fails.length-1} more thing${fails.length>2?"s":""}` : ""}.`;
+}
+function renderAssess(){
+  const A = state.A, i = A.inp;
+  const rd = state.read || {mode: A.p.hasContent ? (A.p.isHTML ? "source" : "text") : "none"};
+  const mode = {none:"your answers only", auto:"your answers and your homepage, which we read automatically", source:"your answers and the page source you pasted", text:"your answers and the homepage text you pasted"}[rd.mode];
+  $("#assess-lead").textContent = `We checked ${i.url} in four areas using ${mode}.`;
+  const rs = $("#read-status");
+  if(rd.mode === "none"){
+    rs.hidden = false;
+    rs.innerHTML = `<strong>We couldn't read ${esc(i.url)} automatically</strong> (${esc(rd.reason || "no homepage was provided")}). Most websites block this from a browser, so these results are based on the details you entered. Checks we couldn't run are marked "?". For a fuller check, go back and paste your homepage text or page source.`;
+  } else if(rd.mode === "auto"){
+    rs.hidden = false; rs.innerHTML = `<strong>We read your homepage automatically.</strong> ${A.sig.wc} words were checked.`;
+  } else rs.hidden = true;
+  const rows = [["Business", i.name], ["Website", i.url], ["Type", TYPES[i.type].label], ["Town / city", i.city], ["Main offer", i.service],
+    ["Main goal", GOALS[i.goal].label], ["Customers find you by", DISCOVERY[i.discovery]], ["Last updated", UPDATED[i.updated]],
+    ["Works on phones?", YNU[i.mobile]], ["Details easy to find?", YNU[i.findable]],
+    ["Homepage provided", !A.p.hasContent ? "No" : A.p.isHTML ? `Page source (${A.sig.wc} words)` : `Text (${A.sig.wc} words)`]];
+  $("#answers").innerHTML = rows.map(([k,v]) => `<div><dt>${esc(k)}</dt><dd>${esc(v)}</dd></div>`).join("");
+  const color = {good:"var(--good)", attn:"var(--med)", urgent:"var(--high)", unk:"var(--unk)"};
+  $("#areas").innerHTML = A.areas.map(a => `
+    <article class="area" aria-labelledby="ar-${a.id}">
+      <header><h3 id="ar-${a.id}">${esc(a.name)}</h3>${statusPill(a.status)}</header>
+      <div class="score">${a.score === null ? "–" : a.score}<small>${a.score === null ? "" : " / 100"}</small></div>
+      <div class="meter" role="img" aria-label="${esc(a.name)} score ${a.score ?? "not available"}"><i style="width:${a.score ?? 0}%;background:${color[a.status]}"></i></div>
+      <p class="sum">${esc(areaSummary(a))}</p>
+      <ul class="checks">${a.results.map(r => `<li><span class="ic ${r.status}" aria-hidden="true">${r.status==="pass"?"✓":r.status==="fail"?"✗":"?"}</span><span><span class="sr">${r.status==="pass"?"Passed":r.status==="fail"?"Needs work":"Not checked"}: </span>${esc(r.ch.label)}<span class="d">${esc(r.detail)}</span></span></li>`).join("")}</ul>
+    </article>`).join("");
+}
+function issueCard(it, idx){
+  const rec = it.id === state.A.recommendedId, sel = it.id === state.selectedId;
+  const area = AREAS.find(a => a.id === it.area);
+  return `<article class="issue${sel ? " is-selected" : ""}" aria-labelledby="is-${it.id}">
+    <div class="head">
+      <h3 id="is-${it.id}">${idx+1}. ${esc(it.title)}</h3>
+      <label class="pick"><input type="radio" name="priority" value="${it.id}"${sel ? " checked" : ""}> ${sel ? "✓ My chosen priority" : "Choose this instead"}</label>
+    </div>
+    <div class="badges">
+      ${rec ? '<span class="pill rec">★ Recommended first</span>' : ""}
+      <span class="pill sev-${it.sev}">${it.sev} priority</span>
+      <span class="pill s-unk">${esc(area.short)}</span>
+      <span class="pill s-unk">${esc(PATH[it.path].label)}</span>
+    </div>
+    <dl class="www">
+      <dt>What</dt><dd>${esc(it.what)}</dd>
+      <dt>Why</dt><dd>${esc(it.why)}</dd>
+      <dt>How</dt><dd><ol>${it.how.map(h => `<li>${esc(h.t)}</li>`).join("")}</ol></dd>
+    </dl>
+  </article>`;
+}
+function renderIssues(){
+  const list = state.A.issues;
+  const shown = 6;
+  // keep the lower-priority list open if the owner was working in it, or if their choice is in it (NEW-B: re-render on select)
+  const prev = $("#issues details.more");
+  const keepOpen = (prev && prev.open) || list.findIndex(i => i.id === state.selectedId) >= shown;
+  $("#issues").innerHTML = `<p class="hint" style="margin:-8px 0 14px">${list.length} improvement${list.length>1?"s":""} found, ordered High, then Medium, then Low. Click anywhere on a card to make it your priority.</p>` +
+    list.slice(0,shown).map(issueCard).join("") +
+    (list.length > shown ? `<details class="more"${keepOpen ? " open" : ""}><summary>Show ${list.length - shown} lower-priority improvement${list.length-shown>1?"s":""}</summary>${list.slice(shown).map((it,i)=>issueCard(it,i+shown)).join("")}</details>` : "");
+}
+/* ---------- Hand-off to Renew (US-06) and Act (US-08): the second half of the sprint ---------- */
+const WHO_LABEL = {owner:"You can do this", dss:"DSS can help", vendor:"May need a vendor"};
+function handoff(){
+  const A = state.A; if(!A) return null;
+  const i = A.inp, sel = selected();
+  return {
+    version:"sprint1-part1-v1",
+    generatedAt:new Date().toISOString(),
+    business:{name:i.name, url:i.url, type:i.type, typeLabel:TYPES[i.type].label, city:i.city, service:i.service,
+      goal:i.goal, goalLabel:GOALS[i.goal].label, goalButton:fill(GOALS[i.goal].cta,{name:i.name}), discovery:i.discovery, discoveryLabel:DISCOVERY[i.discovery],
+      updated:i.updated, updatedLabel:UPDATED[i.updated], mobileOk:i.mobile, detailsFindable:i.findable},
+    input:{homepage:(state.read||{}).mode || (A.p.hasContent ? "text" : "none"), wordCount:A.sig.wc, currentHeadline:A.p.headline || "",
+      found:{phone:A.sig.phoneStr || (A.sig.phone ? "yes" : ""), email:A.sig.emailStr || (A.sig.email ? "yes" : ""), address:A.sig.address, hours:A.sig.hours}},
+    assessment:A.areas.map(a => ({id:a.id, name:a.name, score:a.score, status:a.status, summary:areaSummary(a),
+      checks:a.results.map(r => ({label:r.ch.label, status:r.status, detail:r.detail}))})),
+    improvements:A.issues.map((it, idx) => ({id:it.id, rank:idx+1, area:it.area, areaName:AREAS.find(a => a.id === it.area).name, title:it.title, severity:it.sev,
+      customerPath:PATH[it.path].label, recommendedFirst:it.id === A.recommendedId, chosen:it.id === sel.id, renewKind:it.renew || "none",
+      what:it.what, why:it.why, how:it.how.map(h => ({step:h.t, who:h.who, whoLabel:WHO_LABEL[h.who], whyVendor:h.why || ""}))})),
+    recommendedId:A.recommendedId, chosenId:sel.id
+  };
+}
+function renderHandoff(){
+  const A = state.A, it = selected(), rec = it.id === A.recommendedId;
+  $("#handoff-lead").textContent = `${rec ? "Recommended first" : "Your chosen priority"}: "${it.title}". Next you'll get a before and after, wording you can use, and steps labelled by who can do them.`;
+  $("#handoff").innerHTML = `<div class="card"><h3>Your priority</h3>
+    <div class="badges" style="display:flex;gap:6px;flex-wrap:wrap;margin:0 0 10px"><span class="pill sev-${it.sev}">${it.sev} priority</span>${rec ? '<span class="pill rec" style="background:var(--accent);color:var(--accent-ink)">★ Recommended first</span>' : '<span class="pill s-unk">Your choice</span>'}<span class="pill s-unk">${esc(AREAS.find(a => a.id === it.area).short)}</span></div>
+    <dl class="www"><dt>What</dt><dd>${esc(it.what)}</dd><dt>Why</dt><dd>${esc(it.why)}</dd></dl><p class="hint" style="margin:10px 0 0">The steps to take, and who can do each one, come on the next screen.</p></div>`;
+  const data = handoff();
+  $("#handoff-json").textContent = JSON.stringify(data, null, 2);
+  const secs = state.started && state.finishedAt ? Math.max(1, Math.round((state.finishedAt - state.started)/1000)) : null;
+  $("#fb-time").textContent = secs ? `You reached your priority in ${Math.floor(secs/60)} min ${secs%60} s.` : "";
+  updateCount();
+  document.dispatchEvent(new CustomEvent("gwra:handoff", {detail:data}));
+}
+/* ---------- Wording drafts (US-06) used by Your plan ---------- */
+const CONTENT_KINDS = ["headline","copy","cta"]; // renewKind values that are content issues (US-06 AC2); everything else gets a list (AC3)
+const REASON = {
+  food:"Good food, made with care and close to home.",
+  retail:"A locally owned shop with things you won't find everywhere.",
+  wellness:"Care that is tailored to you, in a calm and welcoming space.",
+  professional:"Clear, expert advice explained in plain language.",
+  trades:"Reliable work and clear, upfront quotes.",
+  other:"Friendly local service you can count on."
+};
+const GOAL_REASON = {
+  call:"Friendly help when you call.",
+  book:"Simple to book: just get in touch.",
+  visit:"Easy to find and welcome to drop in.",
+  order:"Easy to order online.",
+  inquiry:"Free quotes, so you know the cost up front.",
+  message:"Quick to reach: just send us a message."
+};
+const phoneOf = d => /\d{3}/.test((d.input.found || {}).phone || "") ? d.input.found.phone : "";
+const trimTo = (s, n) => s.length <= n ? s : s.slice(0, n - 1).replace(/\s+\S*$/, "") + "…";
+function offer(b){
+  const svc = String(b.service || "").trim().replace(/[.\s]+$/, "");
+  const here = svc.toLowerCase().includes(String(b.city || "").toLowerCase()) ? "" : ` in ${b.city}`;
+  return {svc, here};
+}
+function draftFor(d){
+  const b = d.business, ph = phoneOf(d), {svc, here} = offer(b);
+  const ask = ({
+    call: ph ? `Call us on ${ph}. We're happy to help.` : "Give us a call. We're happy to help.",
+    book: ph ? `Ready to book? Call us on ${ph}.` : "Ready to book? Get in touch today.",
+    visit: "Drop in and see us. We'd love to meet you.",
+    order: "Order online in a few clicks.",
+    inquiry: ph ? `Tell us what you need, or call ${ph}, and we'll get back to you with a free quote.` : "Tell us what you need and we'll get back to you with a free quote.",
+    message: ph ? `Send us a message on WhatsApp or by text at ${ph}.` : "Send us a message on WhatsApp or by text."
+  })[b.goal] || "Get in touch. We'd love to hear from you.";
+  const reason = REASON[b.type] || REASON.other;
+  return {
+    headline: cap(svc) + here,
+    sub: reason,
+    copy: `${b.name} offers ${svc}${here}. ${ask}`,
+    button: b.goalButton,
+    reasons: [`A local business that knows ${b.city}.`, ph ? `Easy to reach: call ${ph}.` : "Easy to reach, and happy to answer questions.", GOAL_REASON[b.goal] || reason]
+  };
+}
+function titleFor(d){
+  const b = d.business, {svc, here} = offer(b);
+  return [`${b.name} | ${cap(svc)}${here}`, `${b.name} in ${b.city}`, b.name].find(x => x.length <= 60) || b.name;
+}
+function metaFor(d){
+  const b = d.business, ph = phoneOf(d), {svc, here} = offer(b);
+  const tail = ({book:"Book an appointment today.", call: ph ? `Call ${ph}.` : "Call us today.", visit:"Come and visit us today.", order:"Order online today.", inquiry:"Request a free quote.", message:"Message us on WhatsApp or by text."})[b.goal] || "Get in touch today.";
+  const full = `${b.name} offers ${svc}${here}. ${tail}`;
+  return full.length <= 160 ? full : trimTo(`${b.name} offers ${svc}${here}.`, 160);
+}
+// Sprint 2 (NEW-C): a few steps carry a ready-to-paste value or a worked example. It is attached to the How step it belongs to
+// (by position), so each step is shown once, with its who-label, instead of once as a "suggested change" and again in Act.
+function extrasFor(it, d){
+  const b = d.business, ph = phoneOf(d), num = ph.replace(/\D/g, "");
+  const tel = num.length === 10 ? `tel:+1${num}` : num.length === 11 && num[0] === "1" ? `tel:+${num}` : num ? `tel:${num}` : "";
+  switch(it.id){
+    case "m-tel": return tel ? {0:{copy:{label:"Link address", value:tel}, note:`Then test it: open your site on your phone and tap ${ph}.`}} : {};
+    case "s-title": { const v = titleFor(d); return {0:{copy:{label:"Suggested page title", value:v}, note:`That is ${v.length} characters. Search results cut titles off after about 60.`}}; }
+    case "s-meta": { const v = metaFor(d); return {0:{copy:{label:"Suggested search description", value:v}, note:`That is ${v.length} characters. Aim for 50 to 160.`}}; }
+    case "s-alt": return {0:{note:`For example: "Our team at ${b.name} in ${b.city}".`}};
+    case "n-wa": { const wa = waLinkFor(ph); return wa ? {1:{copy:{label:"WhatsApp link", value:wa}, note:"Check the number is the phone that has WhatsApp. The 1 at the start is the country code for Canada and the US."}} : {}; }
+    default: return {};
+  }
+}
+function priorityPills(it){
+  const area = AREAS.find(a => a.id === it.area);
+  return `<div class="badges-row"><span class="pill sev-${esc(it.severity)}">${esc(it.severity)} priority</span>${it.recommendedFirst ? '<span class="pill rec" style="background:var(--accent);color:var(--accent-ink)">★ Recommended first</span>' : '<span class="pill s-unk">Your choice</span>'}<span class="pill s-unk">${esc(area ? area.short : it.areaName)}</span></div>`;
+}
+const copyRow = (lbl, val, cls) => `<div class="copyrow"><div><div class="lbl">${esc(lbl)}</div><div class="val ${cls || ""}">${esc(val)}</div></div><button class="btn ghost small" type="button" data-copy="${esc(val)}" aria-label="Copy ${esc(lbl.toLowerCase())}">Copy</button></div>`;
+
+/* ---------- Before and after (US-05) ---------- */
+// "After" for a change that isn't new wording: one plain sentence describing the fixed state. A few get the owner's own details; every
+// other improvement uses the matching check's label, which is already written as the good state ("Menu links go to their own pages").
+function afterFor(it, d){
+  const ph = phoneOf(d);
+  switch(it.id){
+    case "n-loop": return "Every menu item opens its own page, so visitors always land somewhere new.";
+    case "m-tel": return ph ? `Visitors on a phone tap ${ph} and the call starts.` : "Visitors on a phone tap your number and the call starts.";
+    case "n-wa": return "A “Message us on WhatsApp” button near the top of your homepage opens a chat with your business in one tap.";
+    case "n-book": { const O = ONLINE[d.business.goal] || ONLINE.book;
+      return /easier/.test(it.title) ? `Your ${O.noun} button sits near the top of your homepage and in your menu, so every visitor sees it straight away.`
+        : `A “${O.button}” button near the top of your homepage lets customers ${O.verb} any time, without calling.`; }
+    case "n-visit": return "Your address and opening hours are easy to see on the homepage and in the footer.";
+    case "n-route": return "Customers can reach you by email or a contact form, not only by phone.";
+    case "m-answer": return "Your site is easy to read and tap on a phone, including the menu, the buttons and your phone number.";
+    case "n-answer": return "Customers can see your phone, address and hours right away.";
+    case "s-title": return `Your page title reads “${titleFor(d)}”, so people searching see who you are and where.`;
+    case "s-meta": return `Search results show a short description that starts “${trimTo(metaFor(d), 70)}”`;
+    case "s-alt": return "Every photo has a short description, so screen readers and image search can use it.";
+    case "c-fresh": return `Your footer shows ${YEAR} and your hours, prices and services are current.`;
+  }
+  const ch = CHECKS.find(c => c.id === it.id);
+  const label = ch ? ch.label.replace(/\s*\([^)]*\)\s*$/, "").trim() : "";
+  return label ? `After the change: ${label.charAt(0).toLowerCase() + label.slice(1)}.` : "After the change, this part of your site is checked again and is up to date.";
+}
+function toldList(d){
+  const b = d.business;
+  return `<ul class="told"><li><strong>Business:</strong> ${esc(b.name)}</li><li><strong>Town:</strong> ${esc(b.city)}</li><li><strong>Main offer:</strong> ${esc(b.service)}</li><li><strong>Main goal:</strong> ${esc(b.goalLabel)}</li></ul>`;
+}
+const uniq = a => [...new Set(a)];
+const clean1 = t => String(t || "").replace(/\s+/g, " ").trim();
+// A simple picture of the top of the homepage, built from the owner's answers and whatever was read from the homepage.
+function homeModel(){
+  const A = state.A, p = A.p, i = A.inp, g = GOALS[i.goal];
+  const loopT = new Set(A.sig.loopedLinks.map(l => clean1(l.text)));
+  const nav = p.isHTML ? uniq(p.links.map(l => clean1(l.text)).filter(t => t && t.length <= 24)).slice(0, 6).map(t => ({t, bad: loopT.has(t)})) : [];
+  const cands = p.isHTML ? [...p.links.map(l => clean1(l.text)), ...p.buttons.map(clean1)] : String(p.text || "").split(/\n/).map(clean1).filter(x => x && words(x) <= 5);
+  const kw = g ? g.kw : [];
+  const buttons = uniq(cands.filter(t => t && t.length <= 28 && kw.some(k => t.toLowerCase().includes(k)))).slice(0, 2);
+  return {tab: p.title || "", site: i.name, nav, headline: p.headline || "", sub: "", body: p.paragraphs[0] ? trimTo(clean1(p.paragraphs[0]), 150) : "",
+    buttons, phone: A.sig.phoneStr || "", phoneTap: !!p.tel, email: A.sig.emailStr || "", addr: !!A.sig.address, hours: !!A.sig.hours, year: A.sig.crYear,
+    imgs: p.imgs, noAlt: p.imgsNoAlt, fit: true, serp: false, meta: p.metaDesc || "", rich: false};
+}
+// The same picture with this one improvement applied; ch lists what changed so it can be outlined.
+function afterModel(it, d, m, isContent){
+  const a = JSON.parse(JSON.stringify(m)), ch = new Set(), ph = phoneOf(d);
+  const set = (k, v) => { a[k] = v; ch.add(k); };
+  if(isContent){ const dr = draftFor(d); set("headline", dr.headline); set("sub", dr.sub); set("body", dr.copy); set("buttons", [dr.button]); return {a, ch}; }
+  switch(it.id){
+    case "n-book": { const O = ONLINE[d.business.goal] || ONLINE.book, on = state.A.sig.online;
+      set("buttons", on && on.found ? [on.label || O.button] : [O.button]); break; }
+    case "n-wa": set("buttons", ["Message us on WhatsApp", ...m.buttons].slice(0, 2)); break;
+    case "m-tel": set("phone", m.phone || ph || "Your phone number"); set("phoneTap", true); break;
+    case "n-phone": set("phone", ph || "Your phone number"); set("phoneTap", true); break;
+    case "n-answer": if(!m.phone || !m.phoneTap) { set("phone", m.phone || ph || "Your phone number"); set("phoneTap", true); } if(!m.addr) set("addr", true); if(!m.hours) set("hours", true); break;
+    case "n-visit": if(!m.addr) set("addr", true); if(!m.hours) set("hours", true); break;
+    case "n-route": set("email", m.email || "Email us"); break;
+    case "n-menu": set("nav", [...m.nav.filter(x => !/contact/i.test(x.t)).map(x => ({t: x.t, bad: false})), {t: "Contact", bad: false}].slice(0, 6)); break;
+    case "n-loop": set("nav", m.nav.map(x => ({t: x.t, bad: false}))); break;
+    case "m-answer": case "m-viewport": case "m-oldtech": set("fit", true); break;
+    case "c-fresh": set("year", YEAR); break;
+    case "s-title": set("tab", titleFor(d)); break;
+    case "s-meta": set("meta", metaFor(d)); break;
+    case "s-alt": set("noAlt", 0); break;
+    case "s-schema": set("rich", true); break;
+  }
+  return {a, ch};
+}
+const CH_TEXT = {
+  headline: m => `New headline: “${trimTo(m.headline, 70)}”`, sub: () => "Short subheading under it", body: () => "Short paragraph that names what you offer and where",
+  buttons: m => `Button: “${m.buttons.join("” and “")}”`, phone: () => "Phone number you can tap to call", email: () => "A way to email you",
+  addr: () => "Street address shown", hours: () => "Opening hours shown", nav: () => "Every menu link leads to its own page",
+  tab: m => `Page title: “${trimTo(m.tab, 70)}”`, meta: () => "Search description written", noAlt: () => "Every photo has a short description",
+  year: m => `Footer year updated to ${m.year}`, rich: () => "Address and hours can show in Google results"
+};
+const MISS_TEXT = {buttons: "No button for your main goal", phone: "No phone number", email: "No email or contact form", addr: "No street address", hours: "No opening hours"};
+function mockHtml(m, ch, o){
+  const legend = o.legend || null, miss = o.miss || new Set(); let n = 0;
+  const w = (k, html) => { if(!ch.has(k)) return html; n++; if(legend) legend.push({n, text: (CH_TEXT[k] || (() => k))(m)}); return `<span class="chg">${html}</span><sup class="co">${n}</sup>`; };
+  const q = (k, html) => ch.has(k) ? `<span class="chg">${html}</span>` : html;   // highlight without a number (shown again further down)
+  const slot = k => miss.has(k) ? `<span class="miss">${MISS_TEXT[k]}</span>` : "";
+  const tabTxt = m.tab ? esc(m.tab) : `<span class="mk-empty">no page title</span>`;
+  const serp = m.serp ? `<div class="pg"><div class="mk-serp"><div class="t">${w("tab", tabTxt)}</div><div class="u">${esc(state.A.inp.url || "")}</div><div class="s">${w("meta", m.meta ? esc(m.meta) : `<span class="mk-empty">No description, so Google picks text from your page</span>`)}${m.rich ? `<div>${w("rich", "Open today · Address and hours shown here")}</div>` : ""}</div></div></div>` : "";
+  const showBad = !!o.navIssue;
+  const navHtml = m.nav.length ? m.nav.map(x => `<span${x.bad && showBad ? ' class="bad" title="Only reloads the homepage"' : ""}>${esc(x.t)}${x.bad && showBad ? " ↻" : ""}</span>`).join("") : "";
+  const hd = `<div class="site-hd"><span class="mk-site">${esc(m.site)}</span><span class="mk-nav">${ch.has("nav") ? w("nav", navHtml) : navHtml}</span></div>`;
+  const head = m.headline ? `<div class="mk-h">${w("headline", esc(m.headline))}</div>` : `<div class="mk-h"><span class="miss">No clear headline</span></div>`;
+  const sub = m.sub ? `<div class="mk-sub">${w("sub", esc(m.sub))}</div>` : "";
+  const body = m.body ? `<div class="mk-p">${w("body", esc(m.body))}</div>` : "";
+  const btns = m.buttons.length ? `<div class="mk-btns">${w("buttons", m.buttons.map(b => `<span class="mk-btn">${esc(b)}</span>`).join(" "))}</div>` : (slot("buttons") ? `<div class="mk-btns">${slot("buttons")}</div>` : "");
+  const items = [
+    m.phone ? `<span class="pill-i">${w("phone", m.phoneTap ? `<u>Call ${esc(m.phone)}</u>` : esc(m.phone))}</span>` : slot("phone"),
+    m.email ? `<span class="pill-i">${w("email", esc(m.email))}</span>` : slot("email"),
+    m.addr ? `<span class="pill-i">${w("addr", ch.has("addr") ? "Your street address" : "Address")}</span>` : slot("addr"),
+    m.hours ? `<span class="pill-i">${w("hours", ch.has("hours") ? "Your opening hours" : "Opening hours")}</span>` : slot("hours")
+  ].filter(Boolean);
+  const strip = items.length ? `<div class="strip">${items.join("")}</div>` : `<div class="strip"><span class="mk-empty">No contact details in view</span></div>`;
+  const imgs = m.imgs ? `<div class="mk-info">${w("noAlt", `${m.imgs} photo${m.imgs > 1 ? "s" : ""}: ${m.noAlt ? m.noAlt + " without a description" : "all described"}`)}</div>` : "";
+  const foot = m.year ? `<div class="mk-foot">${w("year", "© " + m.year)}</div>` : "";
+  const tiny = o.phone && !m.fit;
+  return `<div class="frame${o.phone ? " phone" : ""}${tiny ? " tiny" : ""}"><div class="tabbar"><span class="dots">●●●</span><span>${q("tab", tabTxt)}</span></div>${serp}${hd}<div class="hero">${head}${sub}${body}${btns}</div>${strip}<div class="pg">${imgs}${foot}</div>${tiny ? `<div class="mk-info" style="padding:0 14px 8px"><span class="mk-empty">Tiny text: visitors must pinch and zoom</span></div>` : ""}</div>`;
+}
+function previewCard(it, d, isContent){
+  const noHome = d.input.homepage === "none";
+  const phoneView = ["m-answer", "m-viewport", "m-oldtech"].includes(it.id), serpView = ["s-title", "s-meta", "s-schema"].includes(it.id);
+  const navIssue = ["n-loop", "n-menu"].includes(it.id);
+  const m = homeModel(); m.serp = serpView; if(phoneView) m.fit = false;
+  const {a, ch} = afterModel(it, d, m, isContent);
+  const miss = new Set([...ch].filter(k => { const v = m[k]; return !v || (Array.isArray(v) && !v.length); }));
+  let before, beforeBar;
+  if(state.shot){ before = `<img src="${state.shot}" alt="Screenshot of your homepage" style="width:100%;max-height:360px;object-fit:cover;object-position:top;border-radius:6px">`; beforeBar = ["Before", "your screenshot"]; }
+  else if(noHome){ before = `<p class="none" style="margin:0 0 8px">We didn't have your homepage, so this is what you told us:</p>${toldList(d)}`; beforeBar = ["Before", "what you told us"]; }
+  else { before = mockHtml(m, new Set(), {phone: phoneView, miss, navIssue}); beforeBar = ["Before", "from your homepage"]; }
+  const legend = [];
+  const afterHtml = mockHtml(a, ch, {phone: phoneView, after: true, legend, navIssue});
+  const list = legend.length || phoneView ? `<ol class="chg-list">${legend.map(x => `<li><sup class="co">${x.n}</sup> ${esc(x.text)}</li>`).join("")}${phoneView ? `<li class="ok">✓ The page fits the phone screen</li>` : ""}</ol>` : "";
+  const bnote = isContent ? "" : `<p class="what-line" style="margin-top:8px">${esc(it.what)}</p>`;
+  const anote = isContent || list ? "" : `<p class="after-line" style="margin-top:8px">${esc(afterFor(it, d))}</p>`;
+  return `<div class="card" id="preview">
+    <h3>Before and after</h3>
+    <div class="ba">
+      <div class="mock before" id="pv-before"><div class="bar"><span>${beforeBar[0]}</span><span>${beforeBar[1]}</span></div><div class="body">${before}${bnote}</div></div>
+      <div class="mock" id="pv-after"><div class="bar"><span>After</span><span>${isContent ? "suggested draft" : "the change"}</span></div><div class="body">${afterHtml}${list}${anote}</div></div>
+    </div>
+    <p class="hint" style="margin:10px 0 0">${state.shot ? "The Before is your screenshot. " : ""}The After is an illustration built from your answers and homepage, not a screenshot. Numbers show what changed.</p>
+  </div>`;
+}
+
+/* ---------- Your plan (NEW-C): Renew (US-06) and Act (US-08) in one step; the first step is marked (US-07) ---------- */
+const VENDOR_FALLBACK = "This may need technical changes beyond basic website editing.";
+function planSteps(it, d, markFirst){
+  const extra = markFirst ? extrasFor(it, d) : {};
+  return `<ol class="act">${it.how.map((h, i) => `<li>${markFirst && i === 0 ? '<span class="start">Start here</span>' : ""}<span class="who ${esc(h.who)}">${esc(WHO_LABEL[h.who] || h.whoLabel)}</span> ${esc(h.step)}${h.who === "vendor" ? `<span class="why-v">Why a vendor: ${esc(h.whyVendor || VENDOR_FALLBACK)}</span>` : ""}${extra[i] && extra[i].copy ? copyRow(extra[i].copy.label, extra[i].copy.value, "plain") : ""}${extra[i] && extra[i].note ? `<span class="xnote">${esc(extra[i].note)}</span>` : ""}</li>`).join("")}</ol>`;
+}
+function renderPlan(){
+  const d = handoff(); if(!d) return;
+  const it = d.improvements.find(i => i.chosen) || d.improvements[0];
+  const others = d.improvements.filter(i => i.id !== it.id);
+  const b = d.business, isContent = CONTENT_KINDS.includes(it.renewKind);
+  const n = {owner:0, dss:0, vendor:0}; it.how.forEach(h => { n[h.who] = (n[h.who] || 0) + 1; });
+  const plural = (k, one, many) => `${k} ${k === 1 ? one : many}`;
+  const summary = `This priority has ${plural(it.how.length, "step", "steps")}: ${n.owner} you can do yourself, ${n.dss} where DSS can help, and ${n.vendor} that may need a vendor.`;
+  const nextMove = n.vendor
+    ? "Start with the steps you can do or DSS can help with. Ask DSS before you hire a vendor, so you only pay for work that needs one."
+    : "You and DSS can handle every step of this priority. Nothing here should need a vendor.";
+  $("#plan-lead").textContent = `For your priority: “${it.title}”. ` + (isContent
+    ? "Here is a before and after, draft wording you can copy, and the steps to take, each marked with who can do it."
+    : "Here is a before and after, and the steps to take, each marked with who can do it.");
+  let copyCard = "";
+  if(isContent){
+    const dr = draftFor(d);
+    const note = {
+      headline:"Your headline is the first thing visitors read. This one says what you do and where.",
+      copy:"A headline and short paragraph that name your main offer and your town, plus reasons to choose you.",
+      cta:`A clear button for your main goal (“${b.goalLabel}”), with a headline and a few lines to go with it.`
+    }[it.renewKind];
+    copyCard = `<div class="card">
+        <h3>Copy and paste</h3>
+        <p class="hint" style="margin:0 0 6px">${esc(note)}</p>
+        ${copyRow("Headline", dr.headline)}
+        ${copyRow("Subheading", dr.sub, "plain")}
+        ${copyRow("Short copy", dr.copy, "plain")}
+        ${copyRow("Button text", dr.button)}
+        ${it.renewKind === "copy" ? `<div class="copyrow"><div><div class="lbl">Reasons to choose you (keep the ones that are true)</div><ul class="reasons">${dr.reasons.map(r => `<li>${esc(r)}</li>`).join("")}</ul></div><button class="btn ghost small" type="button" data-copy="${esc(dr.reasons.map(r => "• " + r).join("\n"))}" aria-label="Copy reasons to choose you">Copy</button></div>` : ""}
+        <p class="notice" style="margin-top:12px">This is draft wording built from what you told us. Change anything that isn't true for ${esc(b.name)}, especially hours, prices and promises such as how quickly you reply.</p>
+      </div>`;
+  }
+  $("#plan").innerHTML = `
+    <div class="card">
+      <h3>Your priority: ${esc(it.title)}</h3>
+      ${priorityPills(it)}
+      <dl class="www"><dt>What</dt><dd>${esc(it.what)}</dd><dt>Why</dt><dd>${esc(it.why)}</dd></dl>
+    </div>
+    ${previewCard(it, d, isContent)}
+    ${copyCard}
+    <div class="legend-row no-print">
+      <span class="k owner">You can do this</span><span class="k dss">DSS can help</span><span class="k vendor">May need a vendor</span>
+      <details class="lg"><summary>What do these mean?</summary>
+        <p><span class="k owner">You can do this</span> Simple changes you can make yourself in your website editor.</p>
+        <p><span class="k dss">DSS can help</span> The Digital Service Squad (DSS) can work through it with you.</p>
+        <p><span class="k vendor">May need a vendor</span> Technical work beyond basic website editing, where a web developer may be needed.</p>
+      </details>
+    </div>
+    <div class="card" id="steps">
+      <h3>${isContent ? "Steps to take" : "Suggested changes, step by step"}</h3>
+      <p class="sumline">${esc(summary)}</p>
+      ${planSteps(it, d, true)}
+      <p class="notice" style="margin-top:12px">${esc(nextMove)}</p>
+    </div>
+    ${others.length ? `<details class="more"><summary>Other improvements (${others.length})</summary>${others.map(i => `<div class="card"><h3>${esc(i.title)} <span class="pill sev-${esc(i.severity)}">${esc(i.severity)}</span></h3>${planSteps(i, d, false)}</div>`).join("")}</details>` : ""}`;
+}
+
+/* ---------- v3 sample: copy and download the whole plan, screenshot upload ---------- */
+function planAsText(){
+  const d = handoff(); if(!d) return "";
+  const it = d.improvements.find(i => i.chosen) || d.improvements[0], b = d.business, ex = extrasFor(it, d);
+  const L = [`Website plan for ${b.name} (${b.url})`, "", `Priority: ${it.title} (${it.severity} priority)`, `What: ${it.what}`, `Why: ${it.why}`, "", "Steps:"];
+  it.how.forEach((h, i) => L.push(`${i + 1}. [${WHO_LABEL[h.who]}] ${h.step}${h.who === "vendor" ? ` (Why a vendor: ${h.whyVendor || VENDOR_FALLBACK})` : ""}`));
+  Object.values(ex).forEach(e => { if(e.copy) L.push(`   ${e.copy.label}: ${e.copy.value}`); });
+  if(CONTENT_KINDS.includes(it.renewKind)){ const dr = draftFor(d); L.push("", "Draft wording:", `Headline: ${dr.headline}`, `Subheading: ${dr.sub}`, `Short copy: ${dr.copy}`, `Button text: ${dr.button}`); }
+  const others = d.improvements.filter(i => i.id !== it.id);
+  if(others.length){ L.push("", "Other improvements:"); others.forEach(o => L.push(`- ${o.title} (${o.severity})`)); }
+  return L.join("\n");
+}
+function downloadPlan(){
+  const plan = $("#plan"); if(!plan || !state.A) return;
+  const name = state.A.inp.name || "plan";
+  const css = ($("head style") || {textContent: ""}).textContent;
+  const doc = `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Website plan: ${esc(name)}</title><style>${css}</style></head><body><main class="wrap"><p class="no-print"><button class="btn" type="button" onclick="window.print()">Print or save as PDF</button></p><h2 class="vh">Website plan: ${esc(name)}</h2>${plan.innerHTML}</main></body></html>`;
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(new Blob([doc], {type:"text/html"}));
+  a.download = `plan-${name.replace(/[^a-z0-9]+/gi, "-").toLowerCase()}.html`;
+  document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(() => URL.revokeObjectURL(a.href), 2000);
+}
+$("#shot").addEventListener("change", e => {
+  const f = e.target.files && e.target.files[0];
+  if(!f){ state.shot = null; return; }
+  if(f.size > 6e6){ toast("That image is over 6 MB. Please choose a smaller one."); e.target.value = ""; state.shot = null; return; }
+  const r = new FileReader(); r.onload = () => { state.shot = r.result; }; r.readAsDataURL(f);
+});
+
+/* ---------- Sprint Review test logging ---------- */
+const LOG_KEY = "gwra-sprint1-tests";
+function ratings(id, name){ $(id).innerHTML = [1,2,3,4,5].map(n => `<label><input type="radio" name="${name}" value="${n}"> ${n}</label>`).join(""); }
+function updateCount(){ const n = store.get(LOG_KEY, []).length; $("#fb-count").textContent = n ? `${n} saved on this device` : ""; }
+function saveFeedback(){
+  const A = state.A; if(!A) return;
+  const conf = ($('input[name="fb-conf"]:checked')||{}).value || "";
+  const help = ($('input[name="fb-help"]:checked')||{}).value || "";
+  const wording = ($('input[name="fb-wording"]:checked')||{}).value || "";
+  const who = ($('input[name="fb-who"]:checked')||{}).value || "";
+  const entry = {
+    timestamp:new Date().toISOString(), business:A.inp.name, homepage:!A.p.hasContent ? "none" : A.p.isHTML ? "source" : "text",
+    completed:"yes", seconds:state.started && state.finishedAt ? Math.round((state.finishedAt - state.started)/1000) : "",
+    recommended:issueById(A.recommendedId).title, chosen:selected().title, changedPriority:state.selectedId !== A.recommendedId ? "yes" : "no",
+    confidence:conf, helpful:help, wordingUseful:wording, whoClear:who, confused:$("#fb-confused").value.trim(),
+    scores:A.areas.map(a => `${a.short}:${a.score ?? "-"}`).join(" ")
+  };
+  const log = store.get(LOG_KEY, []); log.push(entry);
+  if(store.set(LOG_KEY, log)){ toast("Thanks! Your feedback is saved on this device."); $("#fb-confused").value = ""; $$('#feedback input[type=radio]').forEach(r => r.checked = false); }
+  else toast("Couldn't save in this browser. Please download the results instead.");
+  state._lastEntry = entry;
+  updateCount();
+}
+function exportCsv(){
+  let log = store.get(LOG_KEY, []);
+  if(!log.length && state._lastEntry) log = [state._lastEntry];
+  if(!log.length){ toast("No saved feedback yet."); return; }
+  const cols = [...new Set(log.flatMap(r => Object.keys(r)))]; // union, so older saved rows don't hide new columns
+  const q = v => `"${String(v ?? "").replace(/"/g,'""')}"`;
+  const csv = [cols.join(","), ...log.map(r => cols.map(c => q(r[c])).join(","))].join("\n");
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(new Blob([csv], {type:"text/csv"}));
+  a.download = `sprint1-test-results-${new Date().toISOString().slice(0,10)}.csv`;
+  document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(() => URL.revokeObjectURL(a.href), 2000);
+}
+
+/* ---------- Utilities + wiring ---------- */
+let tt;
+function toast(msg){ const t = $("#toast"); t.textContent = msg; t.classList.add("on"); clearTimeout(tt); tt = setTimeout(() => t.classList.remove("on"), 2600); }
+async function copy(text){
+  try{ await navigator.clipboard.writeText(text); toast("Copied."); }
+  catch(e){ const ta = document.createElement("textarea"); ta.value = text; document.body.appendChild(ta); ta.select(); try{ document.execCommand("copy"); toast("Copied."); }catch(_){ toast("Couldn't copy. Please select the text instead."); } ta.remove(); }
+}
+document.addEventListener("click", e => {
+  const g = e.target.closest("[data-go]"); if(g){ go(parseInt(g.dataset.go,10)); return; }
+  const sm = e.target.closest("[data-sample]"); if(sm){ loadSample(sm.dataset.sample); return; }
+  const c = e.target.closest("[data-copy]"); if(c){ copy(c.dataset.copy); return; }
+  // Sprint 2, NEW-B: a click anywhere on an improvement card selects it. Links, buttons and the radio itself keep their
+  // own behaviour, and selecting text to copy it doesn't change the choice.
+  const card = e.target.closest("#issues .issue");
+  if(card && !e.target.closest("a,button,summary,input,label,select,textarea") && !String(window.getSelection ? getSelection() : "").trim()){
+    const r = card.querySelector('input[name="priority"]');
+    if(r && !r.checked){ r.checked = true; r.dispatchEvent(new Event("change", {bubbles:true})); }
+  }
+});
+document.addEventListener("change", e => {
+  if(e.target.name === "priority"){ state.selectedId = e.target.value; renderIssues(); toast("Priority updated. The next steps will use it."); const r = $(`input[name="priority"][value="${CSS.escape(state.selectedId)}"]`); if(r) r.focus(); }
+});
+// Don't rely on a native form submit: sandboxed previews (e.g. inside an app) block it, which left the first button dead.
+$("#form").addEventListener("submit", onSubmit);
+$("#submit").addEventListener("click", onSubmit);
+$("#form").addEventListener("keydown", e => { if(e.key === "Enter" && e.target.tagName === "INPUT" && e.target.type !== "radio"){ onSubmit(e); } });
+$("#print").addEventListener("click", () => window.print());
+$("#print-plan").addEventListener("click", () => window.print());
+$("#copy-plan").addEventListener("click", () => copy(planAsText()));
+$("#dl-plan").addEventListener("click", downloadPlan);
+window.addEventListener("beforeprint", () => $$("details.more").forEach(d => d.open = true)); // collapsed sections would otherwise be missing from the printout
+const restart = () => { $("#form").reset(); contentKind(); state.A = null; state.selectedId = null; state.started = null; state.finishedAt = null; state.read = null; state.shot = null; go(0); };
+$("#restart").addEventListener("click", restart);
+$("#restart-plan").addEventListener("click", restart);
+$("#copy-json").addEventListener("click", () => copy(JSON.stringify(handoff(), null, 2)));
+$("#dl-json").addEventListener("click", () => { const d = handoff(); if(!d) return; const a = document.createElement("a"); a.href = URL.createObjectURL(new Blob([JSON.stringify(d, null, 2)], {type:"application/json"})); a.download = `handoff-${d.business.name.replace(/[^a-z0-9]+/gi,"-").toLowerCase()}.json`; document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(a.href), 2000); });
+$("#fb-save").addEventListener("click", saveFeedback);
+$("#fb-export").addEventListener("click", exportCsv);
+initForm(); ratings("#fb-conf","fb-conf"); ratings("#fb-help","fb-help"); ratings("#fb-wording","fb-wording"); ratings("#fb-who","fb-who");
+go(0);
+window.__gwra = {assess, parseContent, state}; // used by automated tests
+// Public hooks (Your plan screen = Renew US-06 + Act US-08, combined in Sprint 2 as NEW-C):
+window.gwra = {handoff, goTo:go, onPriorityChange(fn){ document.addEventListener("gwra:handoff", e => fn(e.detail)); }};
+})();
+</script>
+</body>
+</html>
+
+</body></html>
